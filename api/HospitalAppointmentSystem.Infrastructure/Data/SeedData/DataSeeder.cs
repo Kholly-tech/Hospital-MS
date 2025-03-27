@@ -18,7 +18,8 @@ namespace HospitalAppointmentSystem.Infrastructure.Data.SeedData
                     .RuleFor(d => d.PhoneNumber, f => f.Phone.PhoneNumber())
                     .RuleFor(d => d.DateOfBirth, f => f.Date.Past(30, DateTime.Now.AddYears(-25)))
                     .RuleFor(d => d.Specialization, f => f.PickRandom(new[] { "Cardiology", "Neurology", "Pediatrics", "Orthopedics", "Dermatology" }))
-                    .RuleFor(d => d.LicenseNumber, f => f.Random.AlphaNumeric(10).ToUpper());
+                    .RuleFor(d => d.LicenseNumber, f => f.Random.AlphaNumeric(10).ToUpper())
+                    .RuleFor(d => d.password, f => f.Internet.Password(7, false, "!@#$%^&*()_+"));
 
                 var doctors = doctorFaker.Generate(20);
                 await context.Doctors.AddRangeAsync(doctors);

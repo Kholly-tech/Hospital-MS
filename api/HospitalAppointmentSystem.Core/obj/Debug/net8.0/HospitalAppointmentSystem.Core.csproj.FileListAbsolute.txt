@@ -20,3 +20,4 @@
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Core/obj/Debug/net8.0/refint/HospitalAppointmentSystem.Core.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Core/obj/Debug/net8.0/HospitalAppointmentSystem.Core.pdb
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Core/obj/Debug/net8.0/ref/HospitalAppointmentSystem.Core.dll
+/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Core/obj/Debug/net8.0/HospitalAppointmentSystem.Core.sourcelink.json

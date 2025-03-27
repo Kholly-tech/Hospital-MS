@@ -28,3 +28,4 @@
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/refint/HospitalAppointmentSystem.Shared.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/HospitalAppointmentSystem.Shared.pdb
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/ref/HospitalAppointmentSystem.Shared.dll
+/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/HospitalAppointmentSystem.Shared.sourcelink.json

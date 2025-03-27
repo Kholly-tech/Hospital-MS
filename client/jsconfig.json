@@ -1,10 +1,11 @@
 {
     "compilerOptions": {
       "baseUrl": ".",
-      "paths": {
-        "@/*": ["./src/*"],
-        "@components/*": ["./src/components/*"],
-      },
+      // "paths": {
+      //   "@/*": ["./src/*"],
+      //   "@components/*": ["./src/components/*"],
+      //   "@pages/*": ["./src/pages/*"],
+      // },
       // ... rest of your tsconfig options ...
     }
   }

@@ -306,3 +306,4 @@
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/HospitalAppointmentSystem.API.pdb
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/HospitalAppointmentSystem.API.genruntimeconfig.cache
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/ref/HospitalAppointmentSystem.API.dll
+/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/HospitalAppointmentSystem.API.sourcelink.json
