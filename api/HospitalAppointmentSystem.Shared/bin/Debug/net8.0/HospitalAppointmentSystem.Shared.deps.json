@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "HospitalAppointmentSystem.Shared/1.0.0": {
+        "dependencies": {
+          "HospitalAppointmentSystem.Core": "1.0.0"
+        },
+        "runtime": {
+          "HospitalAppointmentSystem.Shared.dll": {}
+        }
+      },
+      "HospitalAppointmentSystem.Core/1.0.0": {
+        "runtime": {
+          "HospitalAppointmentSystem.Core.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "HospitalAppointmentSystem.Shared/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HospitalAppointmentSystem.Core/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
