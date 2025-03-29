@@ -23,9 +23,9 @@
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/HospitalAppointmentSystem.Shared.AssemblyInfoInputs.cache
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/HospitalAppointmentSystem.Shared.AssemblyInfo.cs
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/HospitalAppointmentSystem.Shared.csproj.CoreCompileInputs.cache
+/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/HospitalAppointmentSystem.Shared.sourcelink.json
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/Hospital.5E2AED4A.Up2Date
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/HospitalAppointmentSystem.Shared.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/refint/HospitalAppointmentSystem.Shared.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/HospitalAppointmentSystem.Shared.pdb
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/ref/HospitalAppointmentSystem.Shared.dll
-/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.Shared/obj/Debug/net8.0/HospitalAppointmentSystem.Shared.sourcelink.json

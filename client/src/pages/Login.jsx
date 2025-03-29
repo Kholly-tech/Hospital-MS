@@ -3,11 +3,11 @@ import { LoginForm } from '../components/Auth/login-form'
 import React from 'react'
 
 const Login = () => {
-    const {handleLogin, loading} = useUser();
+    const {handleLogin, loading, errors } = useUser();
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm">
-        <LoginForm onSubmit={handleLogin} loading={loading} />
+        <LoginForm />
       </div>
     </div>
   )

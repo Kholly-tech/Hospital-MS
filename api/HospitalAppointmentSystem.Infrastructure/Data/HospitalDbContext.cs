@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HospitalAppointmentSystem.Infrastructure
 {
-    public class HospitalDbContext : IdentityDbContext
+    public class HospitalDbContext : IdentityDbContext<User>
     {
         public HospitalDbContext(DbContextOptions<HospitalDbContext> options) 
             : base(options)
@@ -40,6 +40,18 @@ namespace HospitalAppointmentSystem.Infrastructure
             }
             
             // Configure relationships and constraints
+            // Doctor -> User (1:1)
+            modelBuilder.Entity<Doctor>()
+                .HasOne(d => d.User)
+                .WithMany()
+                .HasForeignKey(d => d.UserId);
+
+            // Patient -> User (1:1)
+            modelBuilder.Entity<Patient>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId);
+
             modelBuilder.Entity<Appointment>()
                 .HasOne(a => a.Doctor)
                 .WithMany(d => d.Appointments)

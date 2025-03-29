@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using HospitalAppointmentSystem.Core.Services;
+using HospitalAppointmentSystem.API.Profiles;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,12 +17,29 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
+
+
+builder.Services.AddAutoMapper(cfg => {
+    cfg.AddProfile<AppointmentProfile>();
+    cfg.AddProfile<PatientProfile>();
+    cfg.AddProfile<DoctorProfile>();
+    });
 builder.Services.AddDbContext<HospitalDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<User, IdentityRole>(options => 
+{
+    options.User.RequireUniqueEmail = true;
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+})
     .AddEntityFrameworkStores<HospitalDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+});
 
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -36,19 +56,37 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["validIssuer"],
-        ValidAudience = jwtSettings["validAudience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["secretKey"]))
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
     };
+});
+
+// Add CORS services (place this before AddControllers)
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5174","http://localhost:5175","http://localhost:5176") // Your frontend URL
+            // .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); // If using cookies/auth
+    });
 });
 
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddSingleton<RabbitMqService>();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options => {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -65,10 +103,11 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
     try
     {
         var context = services.GetRequiredService<HospitalDbContext>();
-        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        var userManager = services.GetRequiredService<UserManager<User>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         
         // Ensure database is created and migrated
@@ -86,27 +125,41 @@ using (var scope = app.Services.CreateScope())
         var adminEmail = "admin@hospital.com";
         if (await userManager.FindByEmailAsync(adminEmail) == null)
         {
-            var adminUser = new IdentityUser
+            var adminUser = new User
             {
                 UserName = adminEmail,
                 Email = adminEmail,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                FirstName = "Admin",
+                LastName = "User",
+                Gender = "male",
+                PhoneNumber = "555-123-4567",
+                DateOfBirth = new DateTime(1980, 1, 1),
             };
-            await userManager.CreateAsync(adminUser, "Admin123!");
-            await userManager.AddToRoleAsync(adminUser, "Admin");
+            var result = await userManager.CreateAsync(adminUser, "Admin123!");
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                logger.LogError($"Failed to create admin user: {errors}");
+            }
+            else
+            {
+                await userManager.AddToRoleAsync(adminUser, "Admin");
+            }
         }
         
         // Seed data
-        await DataSeeder.SeedAsync(context, userManager);
+        await DataSeeder.SeedAsync(context, userManager, logger);
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
         logger.LogError(ex, "An error occurred while seeding the database.");
     }
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors("AllowFrontend"); // Between UseRouting and UseEndpoints
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

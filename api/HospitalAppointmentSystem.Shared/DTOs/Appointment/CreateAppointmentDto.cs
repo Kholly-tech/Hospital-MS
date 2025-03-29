@@ -1,4 +1,6 @@
-  public class CreateAppointmentDto
+using HospitalAppointmentSystem.Core;
+
+public class CreateAppointmentDto
     {
         public int PatientId { get; set; }
         public int DoctorId { get; set; }

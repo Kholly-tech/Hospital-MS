@@ -12,6 +12,20 @@ namespace HospitalAppointmentSystem.Infrastructure
             _context = context;
         }
 
+        public async Task<IEnumerable<Doctor>> GetAllWithDetailsAsync()
+        {
+            return await _context.Doctors
+                .Include(d => d.User)
+                .ToListAsync();
+        }
+
+        public async Task<Doctor> GetByIdWithDetailsAsync(int id)
+        {
+            return await _context.Doctors
+                .Include(d => d.User)
+                .FirstOrDefaultAsync(d => d.Id == id);
+        }
+
         public async Task AddAsync(Doctor doctor)
         {
             await _context.Doctors.AddAsync(doctor);

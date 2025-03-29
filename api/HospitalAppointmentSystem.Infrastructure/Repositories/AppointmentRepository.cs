@@ -12,6 +12,24 @@ namespace HospitalAppointmentSystem.Infrastructure
             _context = context;
         }
 
+        public IQueryable<Appointment> GetAll()
+        {
+            return _context.Appointments.AsQueryable();
+        }
+
+        // public async Task<IEnumerable<Appointment>> GetAllWithDetailsAsync()
+        // {
+        //     return await _context.Appointments
+        //         .Include(a => a.Patient)
+        //         .Include(a => a.Doctor)
+        //         .ToListAsync();
+        // }
+
+        public async Task<IEnumerable<Appointment>> GetAllAsync()
+        {
+            return await _context.Appointments.Include(a => a.Patient).Include(a => a.Doctor).ToListAsync();
+        }
+
         public async Task AddAsync(Appointment appointment)
         {
             await _context.Appointments.AddAsync(appointment);
@@ -29,11 +47,6 @@ namespace HospitalAppointmentSystem.Infrastructure
             return await _context.Appointments.AnyAsync(a => a.Id == id);
         }
 
-        public async Task<IEnumerable<Appointment>> GetAllAsync()
-        {
-            return await _context.Appointments.ToListAsync();
-        }
-
         public async Task<Appointment> GetByIdAsync(int id)
         {
             return await _context.Appointments.FindAsync(id);
@@ -42,14 +55,14 @@ namespace HospitalAppointmentSystem.Infrastructure
         public async Task<IEnumerable<Appointment>> GetByDoctorIdAsync(int doctorId)
         {
             return await _context.Appointments
-                .Where(a => a.DoctorId == doctorId)
+                .Where(a => a.Doctor.Id == doctorId)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Appointment>> GetByPatientIdAsync(int patientId)
         {
             return await _context.Appointments
-                .Where(a => a.PatientId == patientId)
+                .Where(a => a.Patient.Id == patientId)
                 .ToListAsync();
         }
 
@@ -59,7 +72,4 @@ namespace HospitalAppointmentSystem.Infrastructure
             await _context.SaveChangesAsync();
         }
     }
-
-    // Similar implementations for DoctorRepository, PatientRepository, ScheduleRepository
-    // Omitted for brevity
 }

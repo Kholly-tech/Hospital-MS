@@ -12,10 +12,10 @@ namespace HospitalAppointmentSystem.Core
         public DateTime AppointmentDate { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
-        public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;
-        // public string STatus {get; set;} = NewStatus.Pending;
+        // public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending;
+        public string Status {get; set;} = NewStatus.Pending;
         public string? Notes { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime? UpdatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HospitalAppointmentSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialIdentitySetup : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -40,11 +40,20 @@ namespace HospitalAppointmentSystem.Infrastructure.Migrations
                 {
                     Id = table.Column<string>(type: "varchar(256)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    FirstName = table.Column<string>(type: "varchar(256)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastName = table.Column<string>(type: "varchar(256)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Email = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Gender = table.Column<string>(type: "varchar(256)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PhoneNumber = table.Column<string>(type: "varchar(256)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedEmail = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -55,8 +64,6 @@ namespace HospitalAppointmentSystem.Infrastructure.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ConcurrencyStamp = table.Column<string>(type: "varchar(256)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumber = table.Column<string>(type: "varchar(256)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     PhoneNumberConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
@@ -66,60 +73,6 @@ namespace HospitalAppointmentSystem.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Doctors",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Specialization = table.Column<string>(type: "varchar(256)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LicenseNumber = table.Column<string>(type: "varchar(256)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    FirstName = table.Column<string>(type: "varchar(256)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastName = table.Column<string>(type: "varchar(256)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "varchar(256)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumber = table.Column<string>(type: "varchar(256)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Doctors", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Patients",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Address = table.Column<string>(type: "varchar(256)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    InsuranceProvider = table.Column<string>(type: "varchar(256)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    InsurancePolicyNumber = table.Column<string>(type: "varchar(256)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    FirstName = table.Column<string>(type: "varchar(256)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastName = table.Column<string>(type: "varchar(256)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Email = table.Column<string>(type: "varchar(256)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    PhoneNumber = table.Column<string>(type: "varchar(256)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime(6)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Patients", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -251,6 +204,58 @@ namespace HospitalAppointmentSystem.Infrastructure.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Doctors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(type: "varchar(256)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Specialization = table.Column<string>(type: "varchar(256)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LicenseNumber = table.Column<string>(type: "varchar(256)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Doctors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Doctors_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Patients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(type: "varchar(256)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Address = table.Column<string>(type: "varchar(256)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    InsuranceProvider = table.Column<string>(type: "varchar(256)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    InsurancePolicyNumber = table.Column<string>(type: "varchar(256)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Patients_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Schedules",
                 columns: table => new
                 {
@@ -285,7 +290,8 @@ namespace HospitalAppointmentSystem.Infrastructure.Migrations
                     AppointmentDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     StartTime = table.Column<TimeSpan>(type: "time(6)", nullable: false),
                     EndTime = table.Column<TimeSpan>(type: "time(6)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "varchar(256)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     Notes = table.Column<string>(type: "varchar(256)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -384,6 +390,16 @@ namespace HospitalAppointmentSystem.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Doctors_UserId",
+                table: "Doctors",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_UserId",
+                table: "Patients",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Prescriptions_AppointmentId",
                 table: "Prescriptions",
                 column: "AppointmentId");
@@ -422,9 +438,6 @@ namespace HospitalAppointmentSystem.Infrastructure.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "Appointments");
 
             migrationBuilder.DropTable(
@@ -432,6 +445,9 @@ namespace HospitalAppointmentSystem.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Patients");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }

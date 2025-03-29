@@ -159,6 +159,8 @@
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/HospitalAppointmentSystem.API.runtimeconfig.json
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/HospitalAppointmentSystem.API.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/HospitalAppointmentSystem.API.pdb
+/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/AutoMapper.dll
+/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/Azure.Core.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/Azure.Identity.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/Bogus.dll
@@ -210,10 +212,13 @@
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/System.Configuration.ConfigurationManager.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/System.Drawing.Common.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/System.IdentityModel.Tokens.Jwt.dll
+/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/System.IO.Pipelines.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/System.Memory.Data.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/System.Runtime.Caching.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/System.Security.Cryptography.ProtectedData.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/System.Security.Permissions.dll
+/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/System.Text.Encodings.Web.dll
+/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/System.Text.Json.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/System.Windows.Extensions.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/cs/Microsoft.CodeAnalysis.resources.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/de/Microsoft.CodeAnalysis.resources.dll
@@ -278,6 +283,7 @@
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Drawing.Common.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Runtime.Caching.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Security.Cryptography.ProtectedData.dll
+/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/runtimes/browser/lib/net8.0/System.Text.Encodings.Web.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/runtimes/win/lib/net6.0/System.Windows.Extensions.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/HospitalAppointmentSystem.Core.dll
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/bin/Debug/net8.0/HospitalAppointmentSystem.Infrastructure.dll
@@ -292,6 +298,7 @@
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/HospitalAppointmentSystem.API.csproj.CoreCompileInputs.cache
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/HospitalAppointmentSystem.API.MvcApplicationPartsAssemblyInfo.cs
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/HospitalAppointmentSystem.API.MvcApplicationPartsAssemblyInfo.cache
+/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/HospitalAppointmentSystem.API.sourcelink.json
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/staticwebassets.build.json
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/staticwebassets.development.json
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/staticwebassets/msbuild.HospitalAppointmentSystem.API.Microsoft.AspNetCore.StaticWebAssets.props
@@ -306,4 +313,3 @@
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/HospitalAppointmentSystem.API.pdb
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/HospitalAppointmentSystem.API.genruntimeconfig.cache
 /home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/ref/HospitalAppointmentSystem.API.dll
-/home/kholly/Documents/Codes/HospitalAppointmentSystem/api/HospitalAppointmentSystem.API/obj/Debug/net8.0/HospitalAppointmentSystem.API.sourcelink.json

@@ -1,7 +1,11 @@
+using AutoMapper;
 using HospitalAppointmentSystem.Core;
 using HospitalAppointmentSystem.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace HospitalAppointmentSystem.API.Controllers
 {
@@ -10,111 +14,175 @@ namespace HospitalAppointmentSystem.API.Controllers
     public class AppointmentsController : ControllerBase
     {
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IDoctorRepository _doctorRepository;
+        private readonly IPatientRepository _patientRepository;
+        private readonly ILogger<AppointmentsController> _logger;
+        private readonly IMapper _mapper;
 
-        public AppointmentsController(IAppointmentRepository appointmentRepository)
+        public AppointmentsController(
+            IAppointmentRepository appointmentRepository,
+            IDoctorRepository doctorRepository,
+            IPatientRepository patientRepository,
+            ILogger<AppointmentsController> logger,
+            IMapper mapper)
         {
             _appointmentRepository = appointmentRepository;
+            _doctorRepository = doctorRepository;
+            _patientRepository = patientRepository;
+            _logger = logger;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        // [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAllAppointments()
         {
-            var appointments = await _appointmentRepository.GetAllAsync();
-            return Ok(appointments.Select(a => new AppointmentDto
+            try
             {
-                Id = a.Id,
-                PatientId = a.PatientId,
-                patient = a.Patient,
-                DoctorId = a.DoctorId,
-                doctor = a.Doctor,
-                AppointmentDate = a.AppointmentDate,
-                StartTime = a.StartTime,
-                EndTime = a.EndTime,
-                Status = a.Status,
-                Notes = a.Notes
-            }));
+                var appointments = await _appointmentRepository.GetAll()
+                    .Include(a => a.Patient)
+                        .ThenInclude(p => p.User)
+                    .Include(a => a.Doctor)
+                        .ThenInclude(d => d.User)
+                    .ToListAsync();
+                
+                return Ok(_mapper.Map<List<AppointmentDto>>(appointments));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving appointments");
+                return StatusCode(500, "An error occurred while retrieving appointments");
+            }
         }
 
         [HttpGet("{id}")]
-        // [Authorize]
         public async Task<ActionResult<AppointmentDto>> GetAppointment(int id)
         {
-            var appointment = await _appointmentRepository.GetByIdAsync(id);
-            if (appointment == null)
+            try
             {
-                return NotFound();
-            }
+                var appointment = await _appointmentRepository.GetAll()
+                    .Include(a => a.Patient)
+                        .ThenInclude(p => p.User)
+                    .Include(a => a.Doctor)
+                        .ThenInclude(d => d.User)
+                    .FirstOrDefaultAsync(a => a.Id == id);
 
-            return Ok(new AppointmentDto
+                if (appointment == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(_mapper.Map<AppointmentDto>(appointment));
+            }
+            catch (Exception ex)
             {
-                Id = appointment.Id,
-                PatientId = appointment.PatientId,
-                DoctorId = appointment.DoctorId,
-                AppointmentDate = appointment.AppointmentDate,
-                StartTime = appointment.StartTime,
-                EndTime = appointment.EndTime,
-                Status = appointment.Status,
-                Notes = appointment.Notes
-            });
+                _logger.LogError(ex, $"Error retrieving appointment with id {id}");
+                return StatusCode(500, $"An error occurred while retrieving appointment with id {id}");
+            }
         }
 
         [HttpPost]
-        // [Authorize(Roles = "Patient")]
         public async Task<ActionResult<AppointmentDto>> CreateAppointment([FromBody] CreateAppointmentDto createAppointmentDto)
         {
-            // Validate appointment time, doctor availability, etc.
-            // This would be more complex in a real implementation
-            
-            var appointment = new Appointment
+            try
             {
-                PatientId = createAppointmentDto.PatientId,
-                DoctorId = createAppointmentDto.DoctorId,
-                AppointmentDate = createAppointmentDto.AppointmentDate,
-                StartTime = createAppointmentDto.StartTime,
-                EndTime = createAppointmentDto.EndTime,
-                Notes = createAppointmentDto.Notes,
-                Status = AppointmentStatus.Pending
-            };
+                var appointment = _mapper.Map<Appointment>(createAppointmentDto);
 
-            await _appointmentRepository.AddAsync(appointment);
-
-            return CreatedAtAction(nameof(GetAppointment), new { id = appointment.Id }, 
-                new AppointmentDto
+                // Manually set the Patient and Doctor since they come from repositories
+                appointment.Patient = await _patientRepository.GetByIdAsync(createAppointmentDto.PatientId);
+                appointment.Doctor = await _doctorRepository.GetByIdAsync(createAppointmentDto.DoctorId);
+                
+                if (appointment.Patient == null || appointment.Doctor == null)
                 {
-                    Id = appointment.Id,
-                    PatientId = appointment.PatientId,
-                    DoctorId = appointment.DoctorId,
-                    AppointmentDate = appointment.AppointmentDate,
-                    StartTime = appointment.StartTime,
-                    EndTime = appointment.EndTime,
-                    Status = appointment.Status,
-                    Notes = appointment.Notes
-                });
+                    return BadRequest("Invalid patient or doctor ID");
+                }
+
+                appointment.Status = NewStatus.Pending;
+                appointment.CreatedAt = DateTime.UtcNow;
+
+                await _appointmentRepository.AddAsync(appointment);
+
+                var appointmentDto = _mapper.Map<AppointmentDto>(appointment);
+                return CreatedAtAction(nameof(GetAppointment), new { id = appointment.Id }, appointmentDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating appointment");
+                return StatusCode(500, "An error occurred while creating appointment");
+            }
         }
 
         [HttpPut("{id}/cancel")]
-        // [Authorize(Roles = "Patient")]
         public async Task<IActionResult> CancelAppointment(int id)
         {
-            var appointment = await _appointmentRepository.GetByIdAsync(id);
-            if (appointment == null)
+            try
             {
-                return NotFound();
-            }
+                var appointment = await _appointmentRepository.GetByIdAsync(id);
+                if (appointment == null)
+                {
+                    return NotFound();
+                }
 
-            // Check if cancellation is allowed (48 hours before)
-            if (DateTime.Now.AddHours(48) > appointment.AppointmentDate)
+                if (DateTime.Now.AddHours(48) > appointment.AppointmentDate)
+                {
+                    return BadRequest("Appointments can only be cancelled up to 48 hours before the scheduled time.");
+                }
+
+                appointment.Status = NewStatus.Cancelled;
+                appointment.UpdatedAt = DateTime.UtcNow;
+
+                await _appointmentRepository.UpdateAsync(appointment);
+
+                return NoContent();
+            }
+            catch (Exception ex)
             {
-                return BadRequest("Appointments can only be cancelled up to 48 hours before the scheduled time.");
+                _logger.LogError(ex, $"Error cancelling appointment with id {id}");
+                return StatusCode(500, $"An error occurred while cancelling appointment with id {id}");
             }
+        }
 
-            appointment.Status = AppointmentStatus.Cancelled;
-            appointment.UpdatedAt = DateTime.UtcNow;
+        [HttpGet("doctor/{doctorId}")]
+        public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetDoctorAppointments(int doctorId)
+        {
+            try
+            {
+                var appointments = await _appointmentRepository.GetAll()
+                    .Include(a => a.Patient)
+                        .ThenInclude(p => p.User)
+                    .Include(a => a.Doctor)
+                        .ThenInclude(d => d.User)
+                    .Where(a => a.DoctorId == doctorId)
+                    .ToListAsync();
 
-            await _appointmentRepository.UpdateAsync(appointment);
+                return Ok(_mapper.Map<List<AppointmentDto>>(appointments));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving appointments for doctor with id {doctorId}");
+                return StatusCode(500, $"An error occurred while retrieving appointments for doctor with id {doctorId}");
+            }
+        }
 
-            return NoContent();
+        [HttpGet("patient/{patientId}")]
+        public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetPatientAppointments(int patientId)
+        {
+            try
+            {
+                var appointments = await _appointmentRepository.GetAll()
+                    .Include(a => a.Patient)
+                        .ThenInclude(p => p.User)
+                    .Include(a => a.Doctor)
+                        .ThenInclude(d => d.User)
+                    .Where(a => a.PatientId == patientId)
+                    .ToListAsync();
+
+                return Ok(_mapper.Map<List<AppointmentDto>>(appointments));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving appointments for patient with id {patientId}");
+                return StatusCode(500, $"An error occurred while retrieving appointments for patient with id {patientId}");
+            }
         }
     }
 }

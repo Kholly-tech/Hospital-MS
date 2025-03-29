@@ -4,6 +4,8 @@ namespace HospitalAppointmentSystem.Core
     {
         Task<Appointment> GetByIdAsync(int id);
         Task<IEnumerable<Appointment>> GetAllAsync();
+        IQueryable<Appointment> GetAll();
+        // Task<IEnumerable<Appointment>> GetAllWithDetailsAsync(); // Add this new method
         Task AddAsync(Appointment appointment);
         Task UpdateAsync(Appointment appointment);
         Task DeleteAsync(Appointment appointment);
