@@ -16,7 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-var connectionString = builder.Configuration.GetConnectionString("MySqlConnection");
+var connectionString = builder.Configuration.GetConnectionString("SqlConnection");
+var liveConString = builder.Configuration.GetConnectionString("PgSqlConnection");
 
 
 builder.Services.AddAutoMapper(cfg => {
@@ -24,8 +25,20 @@ builder.Services.AddAutoMapper(cfg => {
     cfg.AddProfile<PatientProfile>();
     cfg.AddProfile<DoctorProfile>();
     });
-builder.Services.AddDbContext<HospitalDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+// Environment-aware DbContext configuration
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<HospitalDbContext>(options =>
+        options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))); // MySQL for development
+        // render psql dpg-cvjuaa95pdvs739vifb0-a
+}
+else
+{
+    builder.Services.AddDbContext<HospitalDbContext>(options =>
+        options.UseNpgsql(liveConString, npgsqlOptions => 
+            npgsqlOptions.CommandTimeout(60))); // PostgreSQL for production (or change to SQL Server/MySQL)
+}
 
 builder.Services.AddIdentity<User, IdentityRole>(options => 
 {
@@ -90,6 +103,15 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+if (builder.Environment.IsProduction())
+{
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+        options.ListenAnyIP(Int32.Parse(port));
+    });
+}
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -109,6 +131,8 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<HospitalDbContext>();
         var userManager = services.GetRequiredService<UserManager<User>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        logger.LogInformation("Db PRovider" + context.Database.ProviderName);
         
         // Ensure database is created and migrated
         await context.Database.MigrateAsync();

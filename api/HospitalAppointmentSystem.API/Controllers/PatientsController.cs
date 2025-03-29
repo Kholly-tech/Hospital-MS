@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoMapper;
 using HospitalAppointmentSystem.Core;
 // using HospitalAppointmentSystem.Core.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace HospitalAppointmentSystem.API.Controllers
 {

@@ -1,6 +1,7 @@
 using HospitalAppointmentSystem.Core;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HospitalAppointmentSystem.Infrastructure
 {
@@ -22,23 +23,50 @@ namespace HospitalAppointmentSystem.Infrastructure
             base.OnModelCreating(modelBuilder);
 
             // Fix for MySQL Identity tables
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            if (Database.ProviderName.Contains("MySql"))
             {
-                foreach (var property in entityType.GetProperties())
+
+                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
                 {
-                    if (property.ClrType == typeof(string))
+                    foreach (var property in entityType.GetProperties())
                     {
-                        // Replace nvarchar with varchar
-                        property.SetColumnType("varchar(256)");
-                    }
-                    else if (property.ClrType == typeof(decimal))
-                    {
-                        // Fix decimal precision if needed
-                        property.SetColumnType("decimal(18,2)");
+                        if (property.ClrType == typeof(string))
+                        {
+                            // Replace nvarchar with varchar
+                            property.SetColumnType("varchar(256)");
+                        }
+                        else if (property.ClrType == typeof(decimal))
+                        {
+                            // Fix decimal precision if needed
+                            property.SetColumnType("decimal(18,2)");
+                        }
                     }
                 }
             }
-            
+
+            // Configure PostgreSQL specific mappings
+            if (Database.ProviderName.Contains("Npgsql"))
+            {
+                // Map DateTime properties to timestamp with time zone
+                foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+                {
+                    foreach (var property in entityType.GetProperties())
+                    {
+                        if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
+                        {
+                            property.SetColumnType("timestamp with time zone");
+                            property.SetValueConverter(
+                                new ValueConverter<DateTime, DateTime>(
+                                    v => v.Kind == DateTimeKind.Unspecified 
+                                        ? DateTime.SpecifyKind(v, DateTimeKind.Utc)
+                                        : v.ToUniversalTime(),
+                                    v => v
+                                ));
+                        }
+                    }
+                }
+            }
+                    
             // Configure relationships and constraints
             // Doctor -> User (1:1)
             modelBuilder.Entity<Doctor>()

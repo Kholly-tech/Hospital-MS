@@ -33,7 +33,7 @@ const useUser = () => {
       try {
           setLoading(true);
           const res = await fetchUser();
-          // console.log('Res: ', res);
+          console.log('Res: ', res);
           dispatch(setCurrentUser(res));
       } catch (error) {
           

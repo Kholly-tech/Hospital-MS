@@ -7,6 +7,12 @@ using HospitalAppointmentSystem.Core;
 using HospitalAppointmentSystem.Infrastructure;
 using HospitalAppointmentSystem.Core.Models;
 using HospitalAppointmentSystem.Core.Services;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 
 namespace HospitalAppointmentSystem.API.Controllers
@@ -67,8 +73,31 @@ namespace HospitalAppointmentSystem.API.Controllers
                 username = user.UserName,
                 gender = user.Gender,
                 dateOfBirth = user.DateOfBirth,
+                refId = null as string
             };
-            return Ok(data);
+
+            try
+            {
+                if(roles.Contains("Doctor"))
+                {
+                    var doctor = await _context.Doctors.FirstOrDefaultAsync(
+                        d => d.UserId == user.Id
+                    );
+                    if(doctor != null) data = data with { refId = doctor.Id.ToString()};
+                }
+                else if(roles.Contains("Patient"))
+                {
+                    var patient = await _context.Patients.FirstOrDefaultAsync(
+                        p => p.UserId == user.Id
+                    );
+                    if(patient != null) data = data with { refId = patient.Id.ToString()};
+                }
+                return Ok(data);
+            } catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetchin Ref Id");
+                return Ok(data);
+            }
         }
 
 
@@ -97,8 +126,30 @@ namespace HospitalAppointmentSystem.API.Controllers
                     lastName= user.LastName,
                     email = user.Email,
                     phoneNumber = user.PhoneNumber,
+                    refId = null as string
                 };
-                return Ok(data);
+                try
+                {
+                    if(roles.Contains("Doctor"))
+                    {
+                        var doctor = await _context.Doctors.FirstOrDefaultAsync(
+                            d => d.UserId == user.Id
+                        );
+                        if(doctor != null) data = data with { refId = doctor.Id.ToString()};
+                    }
+                    else if(roles.Contains("Patient"))
+                    {
+                        var patient = await _context.Patients.FirstOrDefaultAsync(
+                            p => p.UserId == user.Id
+                        );
+                        if(patient != null) data = data with { refId = patient.Id.ToString()};
+                    }
+                    return Ok(data);
+                } catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error fetchin Ref Id");
+                    return Ok(data);
+                }
             }
             catch (System.Exception)
             {

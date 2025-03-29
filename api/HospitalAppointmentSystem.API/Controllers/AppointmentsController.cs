@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using HospitalAppointmentSystem.Core;
 using HospitalAppointmentSystem.Core.Enums;
@@ -5,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 
 namespace HospitalAppointmentSystem.API.Controllers
@@ -34,6 +39,7 @@ namespace HospitalAppointmentSystem.API.Controllers
         }
 
         [HttpGet]
+        [Authorize("Admin")]
         public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetAllAppointments()
         {
             try
@@ -55,6 +61,7 @@ namespace HospitalAppointmentSystem.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<AppointmentDto>> GetAppointment(int id)
         {
             try
@@ -81,6 +88,7 @@ namespace HospitalAppointmentSystem.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<AppointmentDto>> CreateAppointment([FromBody] CreateAppointmentDto createAppointmentDto)
         {
             try
@@ -112,6 +120,7 @@ namespace HospitalAppointmentSystem.API.Controllers
         }
 
         [HttpPut("{id}/cancel")]
+        [Authorize]
         public async Task<IActionResult> CancelAppointment(int id)
         {
             try
@@ -142,6 +151,7 @@ namespace HospitalAppointmentSystem.API.Controllers
         }
 
         [HttpGet("doctor/{doctorId}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetDoctorAppointments(int doctorId)
         {
             try
@@ -164,6 +174,7 @@ namespace HospitalAppointmentSystem.API.Controllers
         }
 
         [HttpGet("patient/{patientId}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<AppointmentDto>>> GetPatientAppointments(int patientId)
         {
             try

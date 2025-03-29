@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 let serverUrl;
 
 if(process.env.NODE_ENV === 'development') {
-    serverUrl = 'http://localhost:5087'
+    serverUrl = 'http://localhost:5000'
 } else {
     serverUrl = 'https://your-production-url.com'
 }

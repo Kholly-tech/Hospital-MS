@@ -1,7 +1,7 @@
 // Appointments.jsx
 import React from 'react'
 import { MainLayout } from '../../layout/MainLayout'
-import { AppointmentsPage } from '../PagesSubComponents/AppointmentsPage'
+import { AppointmentsPage } from '../Admin/AppointmentsPage'
 
 const Appointments = () => {
   return (
