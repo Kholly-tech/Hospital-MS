@@ -131,7 +131,7 @@ namespace HospitalAppointmentSystem.API.Controllers
                     return NotFound();
                 }
 
-                if (DateTime.Now.AddHours(48) > appointment.AppointmentDate)
+                if (DateTime.Now.AddHours(48) > appointment.AppointmentDate && appointment.Status != "pending")
                 {
                     return BadRequest("Appointments can only be cancelled up to 48 hours before the scheduled time.");
                 }
@@ -149,6 +149,10 @@ namespace HospitalAppointmentSystem.API.Controllers
                 return StatusCode(500, $"An error occurred while cancelling appointment with id {id}");
             }
         }
+
+        // [HttpPut("update")]
+        // [Authorize]
+        // public async Task
 
         [HttpGet("doctor/{doctorId}")]
         [Authorize]

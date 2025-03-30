@@ -1,19 +1,32 @@
-import { useState, useEffect } from 'react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Calendar } from '../ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
-import { cn } from '../../lib/utils';
-import { getAllDoctors, getAllPatients, createAppointment, cancelAppointment } from '../../functions/allFunctions';
+import { useState, useEffect } from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Calendar } from "../ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { format, isBefore, isToday, parse } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { cn } from "../../lib/utils";
+import {
+  getAllDoctors,
+  getAllPatients,
+  createAppointment,
+  cancelAppointment,
+} from "../../functions/allFunctions";
+import useUser from "../../services/hooks/useUser";
+import { toast } from "sonner"; // or your preferred toast library
 
 export const PatientAppointmentForm = ({ filter, appointment, onSuccess }) => {
-  console.log(appointment);
+  const { currentUser } = useUser();
   const [formData, setFormData] = useState({
-    patientId: appointment?.patientId || "",
+    patientId: currentUser?.refId || "",
     doctorId: appointment?.doctorId || "",
     appointmentDate: appointment?.appointmentDate
       ? new Date(appointment.appointmentDate)
@@ -25,6 +38,8 @@ export const PatientAppointmentForm = ({ filter, appointment, onSuccess }) => {
   const [doctors, setDoctors] = useState([]);
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [timeError, setTimeError] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,15 +50,72 @@ export const PatientAppointmentForm = ({ filter, appointment, onSuccess }) => {
         ]);
         setDoctors(doctorsData);
         setPatients(patientsData);
+
+        if (appointment?.doctorId) {
+          const doctor = doctorsData.find((d) => d.id === appointment.doctorId);
+          setSelectedDoctor(doctor);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
+  }, [appointment?.doctorId]);
+
+  useEffect(() => {
+    // Validate time whenever time or date changes
+    validateTime();
+  }, [formData.startTime, formData.endTime, formData.appointmentDate]);
+
+  const validateTime = () => {
+    if (!formData.startTime || !formData.endTime) return;
+
+    const today = new Date();
+    const selectedDate = formData.appointmentDate;
+    const startDateTime = combineDateAndTime(selectedDate, formData.startTime);
+    const endDateTime = combineDateAndTime(selectedDate, formData.endTime);
+
+    // Check if date is in past
+    if (isBefore(selectedDate, new Date()) && !isToday(selectedDate)) {
+      setTimeError("Cannot select past dates");
+      return false;
+    }
+
+    // Check if start time is before end time
+    if (isBefore(endDateTime, startDateTime)) {
+      setTimeError("End time must be after start time");
+      return false;
+    }
+
+    // Check if time is in past for today's date
+    if (isToday(selectedDate) && isBefore(startDateTime, today)) {
+      setTimeError("Cannot select past times for today");
+      return false;
+    }
+
+    setTimeError("");
+    return true;
+  };
+
+  const combineDateAndTime = (date, timeString) => {
+    const [hours, minutes] = timeString.split(":").map(Number);
+    const newDate = new Date(date);
+    newDate.setHours(hours, minutes, 0, 0);
+    return newDate;
+  };
+
+  useEffect(() => {
+    toast.success("Appointment form loaded!");
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateTime()) {
+      toast.error("Please fix time validation errors");
+      return;
+    }
+
     setLoading(true);
     try {
       if (appointment) {
@@ -54,45 +126,39 @@ export const PatientAppointmentForm = ({ filter, appointment, onSuccess }) => {
       onSuccess();
     } catch (error) {
       console.error("Error saving appointment:", error);
+      toast.error("Failed to save appointment");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleDoctorSelect = (doctorId) => {
+    const doctor = doctors.find((d) => d.id === doctorId);
+    if (doctor) {
+      setSelectedDoctor(doctor);
+      setFormData((prev) => ({
+        ...prev,
+        doctorId: doctor.id,
+      }));
+    }
+  };
+
+  const disabledPastDates = (date) => {
+    // Disable dates before today
+    return isBefore(date, new Date()) && !isToday(date);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label>Patient</Label>
-        <Select
-          required
-          value={formData.patientId}
-          onValueChange={(value) =>
-            setFormData({ ...formData, patientId: value })
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select patient" />
-          </SelectTrigger>
-          <SelectContent>
-            {patients.map((patient) => (
-              <SelectItem key={patient.id} value={patient.id}>
-                {patient.firstName} {patient.lastName}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
         <Label>Doctor</Label>
-        <Select
-          value={formData.doctorId}
-          onValueChange={(value) =>
-            setFormData({ ...formData, doctorId: value })
-          }
-        >
+        <Select value={formData.doctorId} onValueChange={handleDoctorSelect}>
           <SelectTrigger>
-            <SelectValue placeholder="Select doctor" />
+            <SelectValue placeholder="Select doctor">
+              {selectedDoctor
+                ? `Dr. ${selectedDoctor.firstName} ${selectedDoctor.lastName}`
+                : "Select doctor"}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {doctors.map((doctor) => (
@@ -128,11 +194,15 @@ export const PatientAppointmentForm = ({ filter, appointment, onSuccess }) => {
             <Calendar
               mode="single"
               selected={formData.appointmentDate}
-              onSelect={(date) =>
-                setFormData({ ...formData, appointmentDate: date })
-              }
+              onSelect={(date) => {
+                if (date) {
+                  setFormData({ ...formData, appointmentDate: date });
+                }
+              }}
               initialFocus
               showOutsideDays={true}
+              disabled={disabledPastDates}
+              fromDate={new Date()}
             />
           </PopoverContent>
         </Popover>
@@ -147,6 +217,11 @@ export const PatientAppointmentForm = ({ filter, appointment, onSuccess }) => {
             onChange={(e) =>
               setFormData({ ...formData, startTime: e.target.value })
             }
+            min={
+              isToday(formData.appointmentDate)
+                ? format(new Date(), "HH:mm")
+                : undefined
+            }
           />
         </div>
         <div className="space-y-2">
@@ -157,9 +232,12 @@ export const PatientAppointmentForm = ({ filter, appointment, onSuccess }) => {
             onChange={(e) =>
               setFormData({ ...formData, endTime: e.target.value })
             }
+            min={formData.startTime}
           />
         </div>
       </div>
+
+      {timeError && <div className="text-sm text-red-500">{timeError}</div>}
 
       <div className="space-y-2">
         <Label>Notes</Label>
@@ -170,7 +248,7 @@ export const PatientAppointmentForm = ({ filter, appointment, onSuccess }) => {
         />
       </div>
 
-      <Button type="submit" className="w-full" disabled={loading}>
+      <Button type="submit" className="w-full" disabled={loading || timeError}>
         {loading ? "Saving..." : "Save Appointment"}
       </Button>
     </form>

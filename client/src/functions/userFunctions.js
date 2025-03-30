@@ -28,9 +28,9 @@ export const signin = async (userDet) => {
     }
 }
 
-export const getUser = async () => {
+export const getUserbyId = async (id) => {
     try {
-        const res = await getDataAPI('user');
+        const res = await getDataAPI(`Account/user/${id}`);
         return res;
     } catch (error) {
         throw error;

@@ -22,6 +22,9 @@ import UserDashBoard from "../pages/User/DashBoard";
 import { AdminDoctorsPage } from "../components/Admin/AdminDoctorsPage";
 import { AdminPrescriptionsPage } from "../components/Prescription/AdminPrescriptionsPage";
 import { PatientAppointmentsPage } from "../components/Patients/PatientAppointmentsPage";
+import { PatientPrescriptionsPage } from "../components/Patients/PatientPrescriptionsPage";
+import { PatientPrescriptionDetails } from "../components/Patients/PatientPrescriptionDetails";
+import { UserProfile } from "../pages/UserProfile";
 
 const UserRoutes = () => {
   const [loading, setLoading] = useState(true);
@@ -126,7 +129,9 @@ const router = createBrowserRouter([
     children: [
       { path: "/dashboard", element: <UserDashBoard /> },
       { path: "/appointments", element: <PatientAppointmentsPage /> },
-      // { path: "/profile", element: <Appointments /> },
+      { path: "/prescriptions", element: <PatientPrescriptionsPage /> },
+      { path: "/prescriptions/:id", element: <PatientPrescriptionDetails /> },
+      { path: "/profile/:id", element: <UserProfile /> },
     ],
   },
   {
@@ -147,7 +152,7 @@ const router = createBrowserRouter([
       { path: "admin/doctors", element: <AdminDoctorsPage /> },
       { path: "admin/users", element: <AdminPatientsPage /> },
       { path: "admin/prescriptions", element: <AdminPrescriptionsPage /> },
-      // { path: "admin/uers/:refId", element: <Appointments /> },
+      { path: "admin/users/:id", element: <UserProfile /> },
     ],
   },
   {

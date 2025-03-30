@@ -24,6 +24,7 @@ export function AppSidebar({
     name: currentUser.firstName + " " + currentUser.lastName,
     avatar: currentUser.avatar,
     email: currentUser.email,
+    refId: currentUser.refId,
   }
   // console.log(currentUser);
   let nav = data.navMain;

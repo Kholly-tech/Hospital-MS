@@ -25,17 +25,17 @@ export const data = {
       isActive: true,
       items: [
         {
-          title: "View Appointments",
+          title: "Manage Appointments",
           url: "/appointments",
         },
-        {
-          title: "Shecdule Appointment",
-          url: "/appointments/new",
-        },
+        // {
+        //   title: "Shecdule Appointment",
+        //   url: "/appointments/new",
+        // },
       ],
     },
     {
-      title: "Prescription",
+      title: "Prescriptions",
       url: "#",
       icon: Pill,
       items: [

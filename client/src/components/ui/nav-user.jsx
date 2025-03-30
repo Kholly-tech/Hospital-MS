@@ -30,12 +30,14 @@ import {
   useSidebar,
 } from "./sidebar"
 import useUser from "../../services/hooks/useUser"
+import { useNavigate } from "react-router-dom"
 
 export function NavUser({
   user
 }) {
   const { isMobile } = useSidebar()
   const {logoutUser} = useUser();
+  const navigate = useNavigate();
 
   const handleLogOut = async() => {
     try {
@@ -88,10 +90,14 @@ export function NavUser({
 
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
+              <div onClick={() => {
+                navigate(`/profile/${user?.refId}`);
+              }}>
+                <DropdownMenuItem>
+                  <BadgeCheck />
+                  Account
+                </DropdownMenuItem>
+              </div>
               <DropdownMenuItem>
                 <Bell />
                 Notifications

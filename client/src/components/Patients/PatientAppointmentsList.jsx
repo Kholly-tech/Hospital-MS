@@ -7,6 +7,7 @@ import { cancelAppointment, getPatientAppointments } from '../../functions/allFu
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { PatientAppointmentForm } from "./PatientAppointmentForm";
 import useUser from '../../services/hooks/useUser';
+import { toast } from 'sonner';
 
 export const PatientAppointmentsList = () => {
   const [appointments, setAppointments] = useState([]);
@@ -35,6 +36,7 @@ export const PatientAppointmentsList = () => {
       await cancelAppointment(appointmentId);
       setAppointments(appointments.filter((app) => app.id !== appointmentId));
     } catch (error) {
+      toast.error("Error cancelling appointment");
       console.error("Error cancelling appointment:", error);
     }
   };
@@ -49,7 +51,8 @@ export const PatientAppointmentsList = () => {
             <DialogHeader>
               <DialogTitle>Create New Appointment</DialogTitle>
             </DialogHeader>
-            <AppointmentForm
+            <PatientAppointmentForm
+              appointment={appointment}
               onSuccess={() => {
                 setAppointment(null);
               }}
@@ -100,13 +103,13 @@ export const PatientAppointmentsList = () => {
               <TableCell>
                 {appointment.status === "pending" && (
                   <div className="flex gap-2">
-                    <Button
+                    {/* <Button
                       variant="default"
                       size="sm"
                       onClick={() => setAppointment(appointment)}
                     >
                       Edit
-                    </Button>
+                    </Button> */}
                     <Button
                       variant="destructive"
                       size="sm"
