@@ -447,5 +447,20 @@ namespace HospitalAppointmentSystem.API.Controllers
             return StatusCode(500, "An error occurred while logging out");
         }
     }
+
+[HttpGet("health")]
+    public async Task<IActionResult> Health()
+    {
+        try
+        {
+            _logger.LogInformation("Health Check");
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during health check ");
+            return StatusCode(500, "An error occured during health check");
+        }
+    }
 }
 }
