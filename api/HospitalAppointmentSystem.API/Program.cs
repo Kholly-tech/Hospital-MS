@@ -10,6 +10,9 @@ using System.Text;
 using HospitalAppointmentSystem.Core.Services;
 using HospitalAppointmentSystem.API.Profiles;
 using System.Text.Json.Serialization;
+using HospitalAppointmentSystem.Infrastructure.Repositories;
+using HospitalAppointmentSystem.Core.Profiles;
+using HospitalAppointmentSystem.Core.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +27,7 @@ builder.Services.AddAutoMapper(cfg => {
     cfg.AddProfile<AppointmentProfile>();
     cfg.AddProfile<PatientProfile>();
     cfg.AddProfile<DoctorProfile>();
+    cfg.AddProfile<PrescriptionProfile>();
     });
 
 // Environment-aware DbContext configuration
@@ -102,6 +106,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
 builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<TokenService>();

@@ -3,9 +3,9 @@ import { Button } from '../ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Badge } from '../ui/badge';
 import { format } from 'date-fns';
-import { getAllAppointments, cancelAppointment, getDoctorAppointments, getPatientAppointments } from '../../functions/allFunctions';
+import { cancelAppointment, getPatientAppointments } from '../../functions/allFunctions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import { AppointmentForm } from './PatientAppointmentForm';
+import { PatientAppointmentForm } from "./PatientAppointmentForm";
 import useUser from '../../services/hooks/useUser';
 
 export const PatientAppointmentsList = () => {
@@ -18,7 +18,7 @@ export const PatientAppointmentsList = () => {
     const fetchAppointments = async () => {
       try {
         let data;
-        data = await getAllAppointments();
+        data = await getPatientAppointments(currentUser?.refId);
         setAppointments(data);
       } catch (error) {
         console.error("Error fetching appointments:", error);
@@ -60,7 +60,6 @@ export const PatientAppointmentsList = () => {
       <Table>
         <TableHeader>
           <TableRow className="font-medium text-lg">
-            {<TableHead>Patient</TableHead>}
             {<TableHead>Doctor</TableHead>}
             <TableHead>Date</TableHead>
             <TableHead>Time</TableHead>
@@ -71,12 +70,6 @@ export const PatientAppointmentsList = () => {
         <TableBody>
           {appointments.map((appointment) => (
             <TableRow key={appointment.id}>
-              {
-                <TableCell>
-                  {appointment.patient?.firstName}{" "}
-                  {appointment.patient?.lastName}
-                </TableCell>
-              }
               {
                 <TableCell>
                   Dr. {appointment.doctor?.firstName}{" "}

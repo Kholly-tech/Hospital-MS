@@ -429,10 +429,23 @@ namespace HospitalAppointmentSystem.API.Controllers
             return BadRequest(new { message = "Email confirmation failed" });
         }
         
+    
+
+    [HttpGet("logout")]
+    [Authorize]
+    public async Task<IActionResult> Logout()
+    {
+        try
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User logged out.");
+            return Ok(new { Message = "Logged out successfully" });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error during logout");
+            return StatusCode(500, "An error occurred while logging out");
         }
     }
-    
-
-    
-    
-
+}
+}

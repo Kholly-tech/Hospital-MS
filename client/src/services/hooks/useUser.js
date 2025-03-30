@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { setCurrentUser, updateUser, logout, setIsAuthenticated } from "../redux/slice/authSlice";
+import { setCurrentUser, updateUser, signOut, setIsAuthenticated } from "../redux/slice/authSlice";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { fetchUser, signin, signup } from "../../functions/userFunctions";
+import { fetchUser, signin, signup, logout } from "../../functions/userFunctions";
 import { useNavigate } from "react-router-dom";
 
 const useUser = () => {
@@ -140,6 +140,19 @@ const useUser = () => {
         }
       }
 
+      const logoutUser = async() => {
+        setLoading(true);
+        try {
+          const res = await logout();
+          dispatch(signOut());
+          navigate('/login');
+        } catch (error) {
+          
+        } finally {
+          setLoading(false);
+        }
+      }
+
     return {
         loading,
         currentUser,
@@ -151,6 +164,7 @@ const useUser = () => {
         handleLogin,
         handleRegister,
         sendMailLink,
+        logoutUser,
     };
 }
 

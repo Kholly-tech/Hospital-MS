@@ -1,15 +1,20 @@
-namespace HospitalAppointmentSystem.Core
+using HospitalAppointmentSystem.Core;
+
+namespace HospitalAppointmentSystem.Core.Interfaces
 {
     public interface IPrescriptionRepository
     {
-        Task<IEnumerable<Prescription>> GetAllAsync();
-        Task<Prescription> GetByIdAsync(int id);
-        Task<Prescription> GetByIdWithDetailsAsync(int id);
-        Task<IEnumerable<Prescription>> GetByDoctorAsync(int doctorId);
-        Task<IEnumerable<Prescription>> GetByPatientAsync(int patientId);
+        Task<Prescription?> GetByIdAsync(int id);
+        Task<Prescription?> GetByIdWithDetailsAsync(int id);
+        IQueryable<Prescription> GetQueryable();
         Task AddAsync(Prescription prescription);
         Task UpdateAsync(Prescription prescription);
         Task DeleteAsync(Prescription prescription);
-        IQueryable<Prescription> GetQueryable();
+        
+        Task<(List<Prescription> items, int totalCount)> GetByDoctorWithPagingAsync(
+            int doctorId, int pageNumber, int pageSize);
+            
+        Task<(List<Prescription> items, int totalCount)> GetByPatientWithPagingAsync(
+            int patientId, int pageNumber, int pageSize);
     }
 }

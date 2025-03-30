@@ -18,10 +18,9 @@ const authSlice = createSlice({
     setIsAuthenticated: (state, action) => {
       state.isAuthenticated = action.payload;
     },
-    logout: (state) => {
+    signOut: (state) => {
       state.isAuthenticated = false;
       state.currentUser = null;
-      state.MFA = false;
     },
     updateUser: (state, action) => {
       state.currentUser = { ...state.currentUser, ...action.payload };
@@ -31,7 +30,7 @@ const authSlice = createSlice({
 
 export const { 
   setCurrentUser, 
-  logout, 
+  signOut, 
   setIsAuthenticated,
   updateUser
 } = authSlice.actions;

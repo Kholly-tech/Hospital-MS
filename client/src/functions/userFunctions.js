@@ -54,3 +54,13 @@ export const sendMailLink = async(email) => {
         throw error;
     }
 }
+
+export const logout = async () => {
+    try {
+        const res = await getDataAPI("Account/logout");
+        Cookies.remove('token');
+        return res;
+    } catch (error) {
+        throw error;
+    }
+}

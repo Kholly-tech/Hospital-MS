@@ -24,14 +24,9 @@ export const AdminPrescriptionsList = () => {
         const fetchPrescriptions = async () => {
             try {
                 let data;
-                if (filterType === 'doctor' && filterId) {
-                    data = await getPrescriptionsByDoctor(parseInt(filterId));
-                } else if (filterType === 'patient' && filterId) {
-                    data = await getPrescriptionsByPatient(parseInt(filterId));
-                } else {
-                    data = await getPrescriptions({ search: searchTerm });
-                }
-                setPrescriptions(data);
+                data = await getPrescriptions({ search: searchTerm });
+                console.log(data);
+                setPrescriptions(data?.items);
             } catch (error) {
                 console.error("Error fetching prescriptions:", error);
             } finally {
@@ -108,21 +103,21 @@ export const AdminPrescriptionsList = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {prescriptions.map((prescription) => (
+                    { prescriptions && prescriptions.map((prescription) => (
                         <TableRow key={prescription.id}>
                             <TableCell>{prescription.medication}</TableCell>
                             <TableCell>{prescription.dosage}</TableCell>
                             <TableCell>
-                                {prescription.patient?.user?.firstName} {prescription.patient?.user?.lastName}
+                                {prescription.patient?.firstName} {prescription.patient?.lastName}
                             </TableCell>
                             <TableCell>
-                                Dr. {prescription.doctor?.user?.firstName} {prescription.doctor?.user?.lastName}
+                                Dr. {prescription.doctor?.firstName} {prescription.doctor?.lastName}
                             </TableCell>
                             <TableCell>
                                 {format(new Date(prescription.prescribedDate), 'MM/dd/yyyy')}
                             </TableCell>
                             <TableCell>
-                                {prescription.duration?.days} days
+                                {((prescription.duration))} days
                             </TableCell>
                             <TableCell>
                                 <Button variant="outline" size="sm" className="mr-2">

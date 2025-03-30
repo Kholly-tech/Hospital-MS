@@ -16,6 +16,7 @@ export const AdminPatientsPage = () => {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleSuccess = () => {
+    alert("Patient added successfully!");
     setIsDialogOpen(false);
     setRefreshKey(prev => prev + 1);
   };

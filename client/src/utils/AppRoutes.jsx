@@ -17,10 +17,11 @@ import ConfirmEmail from "../components/Auth/ConfirmEmail";
 import { AdminPatientsPage } from "../components/Admin/AdminPatientsPage";
 import AdminAppointments from "../components/Admin/AdminAppointments";
 import AdminDashBoard from "../pages/Admin/DashBoard";
-// import UserDashBoard from "../pages/User/DashBoard";
+import UserDashBoard from "../pages/User/DashBoard";
 // import DoctorDashBoard from "../pages/Doctor/DashBoard";
 import { AdminDoctorsPage } from "../components/Admin/AdminDoctorsPage";
 import { AdminPrescriptionsPage } from "../components/Prescription/AdminPrescriptionsPage";
+import { PatientAppointmentsPage } from "../components/Patients/PatientAppointmentsPage";
 
 const UserRoutes = () => {
   const [loading, setLoading] = useState(true);
@@ -123,8 +124,8 @@ const router = createBrowserRouter([
   {
     element: <UserRoutes />,
     children: [
-      // { path: "/dashboard", element: <UserDashBoard /> },
-      // { path: "/appointments", element: <Appointments /> },
+      { path: "/dashboard", element: <UserDashBoard /> },
+      { path: "/appointments", element: <PatientAppointmentsPage /> },
       // { path: "/profile", element: <Appointments /> },
     ],
   },

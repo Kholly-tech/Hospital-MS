@@ -1,4 +1,5 @@
 using HospitalAppointmentSystem.Core;
+using HospitalAppointmentSystem.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace HospitalAppointmentSystem.Infrastructure.Repositories
@@ -12,45 +13,17 @@ namespace HospitalAppointmentSystem.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Prescription>> GetAllAsync()
-        {
-            return await _context.Prescriptions
-                .Include(p => p.Doctor).ThenInclude(d => d.User)
-                .Include(p => p.Patient).ThenInclude(p => p.User)
-                .ToListAsync();
-        }
+        public async Task<Prescription?> GetByIdAsync(int id)
+            => await _context.Prescriptions.FindAsync(id);
 
-        public async Task<Prescription> GetByIdAsync(int id)
-        {
-            return await _context.Prescriptions.FindAsync(id);
-        }
-
-        public async Task<Prescription> GetByIdWithDetailsAsync(int id)
-        {
-            return await _context.Prescriptions
-                .Include(p => p.Doctor).ThenInclude(d => d.User)
-                .Include(p => p.Patient).ThenInclude(p => p.User)
-                // .Include(p => p.Appointment)
+        public async Task<Prescription?> GetByIdWithDetailsAsync(int id)
+            => await _context.Prescriptions
+                .Include(p => p.Doctor)
+                .Include(p => p.Patient)
                 .FirstOrDefaultAsync(p => p.Id == id);
-        }
 
-        public async Task<IEnumerable<Prescription>> GetByDoctorAsync(int doctorId)
-        {
-            return await _context.Prescriptions
-                .Include(p => p.Doctor).ThenInclude(d => d.User)
-                .Include(p => p.Patient).ThenInclude(p => p.User)
-                .Where(p => p.DoctorId == doctorId)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Prescription>> GetByPatientAsync(int patientId)
-        {
-            return await _context.Prescriptions
-                .Include(p => p.Doctor).ThenInclude(d => d.User)
-                .Include(p => p.Patient).ThenInclude(p => p.User)
-                .Where(p => p.PatientId == patientId)
-                .ToListAsync();
-        }
+        public IQueryable<Prescription> GetQueryable()
+            => _context.Prescriptions.AsQueryable();
 
         public async Task AddAsync(Prescription prescription)
         {
@@ -70,12 +43,42 @@ namespace HospitalAppointmentSystem.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public IQueryable<Prescription> GetQueryable()
+        public async Task<(List<Prescription> items, int totalCount)> GetByDoctorWithPagingAsync(
+            int doctorId, int pageNumber, int pageSize)
         {
-            return _context.Prescriptions
-                .Include(p => p.Doctor).ThenInclude(d => d.User)
-                .Include(p => p.Patient).ThenInclude(p => p.User)
-                .AsQueryable();
+            var query = _context.Prescriptions
+                .Where(p => p.DoctorId == doctorId)
+                .Include(p => p.Doctor)
+                .Include(p => p.Patient);
+
+            var totalCount = await query.CountAsync();
+            
+            var items = await query
+                .OrderByDescending(p => p.PrescribedDate)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
+
+        public async Task<(List<Prescription> items, int totalCount)> GetByPatientWithPagingAsync(
+            int patientId, int pageNumber, int pageSize)
+        {
+            var query = _context.Prescriptions
+                .Where(p => p.PatientId == patientId)
+                .Include(p => p.Doctor)
+                .Include(p => p.Patient);
+
+            var totalCount = await query.CountAsync();
+            
+            var items = await query
+                .OrderByDescending(p => p.PrescribedDate)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
         }
     }
 }
