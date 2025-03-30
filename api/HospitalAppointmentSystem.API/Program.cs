@@ -75,6 +75,17 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => 
+        policy.RequireRole("Admin"));
+    options.AddPolicy("Doctor", policy => 
+        policy.RequireRole("Doctor"));
+    options.AddPolicy("Patient", policy => 
+        policy.RequireRole("Patient"));
+    
+});
+
 // Add CORS services (place this before AddControllers)
 builder.Services.AddCors(options =>
 {

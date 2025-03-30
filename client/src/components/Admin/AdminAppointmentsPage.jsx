@@ -1,41 +1,26 @@
-import { useState } from 'react';
-import { Button } from '../ui/button';
-import { AppointmentsList } from '../Appointment/AppointmentsList';
-import { AppointmentForm } from '../Appointment/AppointmentForm';
+import { useState } from "react";
+import { Button } from "../ui/button";
+import { AdminAppointmentsList } from "./AdminAppointmentsList";
+import { AdminAppointmentForm } from "./AdminAppointmentForm";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog';
-import useUser from '../../services/hooks/useUser';
+} from "../ui/dialog";
+import useUser from "../../services/hooks/useUser";
 
-export const AppointmentsPage = () => {
+export const AdminAppointmentsPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const { currentUser } = useUser();
 
   const handleSuccess = () => {
-    alert('Appointment Successful');
+    alert("Appointment Successful");
     setIsDialogOpen(false);
-    setRefreshKey(prev => prev + 1);
+    setRefreshKey((prev) => prev + 1);
   };
-
-  let filter;
-  let role = currentUser && currentUser.roles && currentUser.roles[0] || 'Patient';
-  switch (role) {
-    case 'Doctor':
-      filter = 'doctor';
-      break;
-    case 'Admin':
-      filter = 'Admin';
-      break;
-  
-    default:
-      filter = 'patient'
-      break;
-  }
 
   return (
     <div className="space-y-4 mt-8 max-w-full">
@@ -49,11 +34,11 @@ export const AppointmentsPage = () => {
             <DialogHeader>
               <DialogTitle>Create New Appointment</DialogTitle>
             </DialogHeader>
-            <AppointmentForm filter={filter} onSuccess={handleSuccess} />
+            <AdminAppointmentForm onSuccess={handleSuccess} />
           </DialogContent>
         </Dialog>
       </div>
-      <AppointmentsList key={refreshKey} filter={filter} id={currentUser?.refId} />
+      <AdminAppointmentsList key={refreshKey} />
     </div>
   );
 };

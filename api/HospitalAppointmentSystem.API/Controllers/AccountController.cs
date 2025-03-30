@@ -60,6 +60,9 @@ namespace HospitalAppointmentSystem.API.Controllers
                 return Unauthorized(new { message = "User not found" });
             }
             var roles = await _userManager.GetRolesAsync(user);
+            // if(roles.Contains("Doctor")){
+            //     await _userManager.RemoveFromRolesAsync(user, new List<string> { "Doctor", "Admin" });
+            // }
             var data = new {
                 roles = roles,
                 id = user.Id,

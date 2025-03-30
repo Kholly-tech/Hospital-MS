@@ -8,7 +8,7 @@ export function MainLayout({ children }) {
     <SidebarProvider>
       <div className="flex">
         <AppSidebar />
-        <main className="flex-1 min-w-[1000px]">
+        <main className="flex-1 min-w-[980px]">
           {children}
         </main>
       </div>

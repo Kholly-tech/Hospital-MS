@@ -206,6 +206,56 @@ namespace HospitalAppointmentSystem.Infrastructure.Data.SeedData
                 }
             }
 
+            if (!await context.Prescriptions.AnyAsync())
+            {
+                logger?.LogInformation("Seeding prescriptions...");
+                var doctors = await context.Doctors.ToListAsync();
+                var patients = await context.Patients.ToListAsync();
+                var appointments = await context.Appointments.ToListAsync();
+                
+                if (doctors.Any() && patients.Any())
+                {
+                    var prescriptionsList = new List<Prescription>();
+                    var faker = new Faker();
+                    var medications = new[] 
+                    {
+                        "Amoxicillin", "Ibuprofen", "Lisinopril", "Metformin", "Atorvastatin",
+                        "Albuterol", "Omeprazole", "Losartan", "Simvastatin", "Gabapentin"
+                    };
+
+                    for (int i = 0; i < 50; i++)
+                    {
+                        var prescription = new Prescription
+                        {
+                            Doctor = faker.PickRandom(doctors),
+                            Patient = faker.PickRandom(patients),
+                            Medication = faker.PickRandom(medications),
+                            Dosage = $"{faker.Random.Int(1, 500)}mg",
+                            Instructions = faker.PickRandom(new[] 
+                            {
+                                "Take once daily with food",
+                                "Take twice daily with water",
+                                "Apply to affected area twice daily",
+                                "Take as needed for pain",
+                                "Take every 8 hours"
+                            }),
+                            PrescribedDate = faker.Date.Recent(30),
+                            Duration = TimeSpan.FromDays(faker.Random.Int(7, 30))
+                        };
+                        
+                        prescriptionsList.Add(prescription);
+                    }
+                    
+                    await context.Prescriptions.AddRangeAsync(prescriptionsList);
+                    await context.SaveChangesAsync();
+                    logger?.LogInformation($"Successfully seeded {prescriptionsList.Count} prescriptions");
+                }
+                else
+                {
+                    logger?.LogWarning("Cannot seed prescriptions: No doctors or patients found");
+                }
+            }
+
             logger?.LogInformation("Database seeding completed successfully");
         }
     }

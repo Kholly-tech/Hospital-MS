@@ -10,8 +10,8 @@ import { CalendarIcon } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { getAllDoctors, getAllPatients, createAppointment, cancelAppointment } from '../../functions/allFunctions';
 
-export const AppointmentForm = ({ filter, appointment, onSuccess }) => {
-  console.log(appointment);
+export const AdminAppointmentForm = ({ filter, appointment, onSuccess }) => {
+  // console.log(appointment);
   const [formData, setFormData] = useState({
     patientId: appointment?.patientId || '',
     doctorId: appointment?.doctorId || '',

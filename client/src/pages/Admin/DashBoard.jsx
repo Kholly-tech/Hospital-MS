@@ -1,5 +1,4 @@
 import React from "react";
-import { AppSidebar } from "../components/ui/app-sidebar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,18 +6,18 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "../components/ui/breadcrumb";
-import { Separator } from "../components/ui/separator";
+} from "../../components/ui/breadcrumb";
+import { Separator } from "../../components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "../components/ui/sidebar";
-import useUser from "../services/hooks/useUser";
+} from "../../components/ui/sidebar";
+import useUser from "../../services/hooks/useUser";
 import { useNavigate } from "react-router-dom";
-import { MainLayout } from "../layout/MainLayout";
+import { MainLayout } from "../../layout/MainLayout";
 
-const DashBoard = () => {
+const AdminDashBoard = () => {
   const navigate = useNavigate();
 
   return (
@@ -62,4 +61,4 @@ const DashBoard = () => {
   );
 };
 
-export default DashBoard;
+export default AdminDashBoard;

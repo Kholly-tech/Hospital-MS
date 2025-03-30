@@ -5,42 +5,37 @@ import { Badge } from '../ui/badge';
 import { format } from 'date-fns';
 import { getAllAppointments, cancelAppointment, getDoctorAppointments, getPatientAppointments } from '../../functions/allFunctions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import { AppointmentForm } from './AppointmentForm';
+import { AdminAppointmentForm } from "./AdminAppointmentForm";
+import useUser from '../../services/hooks/useUser';
 
-export const AppointmentsList = ({ filter = 'patient', id }) => {
-  console.log(filter);
+export const AdminAppointmentsList = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [appointment, setAppointment] = useState(null);
+  const { currentUser } = useUser();
 
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
         let data;
-        if (filter === 'doctor') {
-          data = await getDoctorAppointments(id);
-        } else if (filter === 'patient') {
-          data = await getPatientAppointments(id);
-        } else {
-          data = await getAllAppointments();
-        }
+        data = await getAllAppointments();
         setAppointments(data);
       } catch (error) {
-        console.error('Error fetching appointments:', error);
+        console.error("Error fetching appointments:", error);
       } finally {
         setLoading(false);
       }
     };
 
     fetchAppointments();
-  }, [filter, id]);
+  }, [currentUser]);
 
   const handleCancel = async (appointmentId) => {
     try {
       await cancelAppointment(appointmentId);
-      setAppointments(appointments.filter(app => app.id !== appointmentId));
+      setAppointments(appointments.filter((app) => app.id !== appointmentId));
     } catch (error) {
-      console.error('Error cancelling appointment:', error);
+      console.error("Error cancelling appointment:", error);
     }
   };
 
@@ -54,7 +49,7 @@ export const AppointmentsList = ({ filter = 'patient', id }) => {
             <DialogHeader>
               <DialogTitle>Create New Appointment</DialogTitle>
             </DialogHeader>
-            <AppointmentForm
+            <AdminAppointmentForm
               onSuccess={() => {
                 setAppointment(null);
               }}
@@ -65,8 +60,8 @@ export const AppointmentsList = ({ filter = 'patient', id }) => {
       <Table>
         <TableHeader>
           <TableRow className="font-medium text-lg">
-            {filter != "patient" && <TableHead>Patient</TableHead>}
-            {filter != "doctor" && <TableHead>Doctor</TableHead>}
+            {<TableHead>Patient</TableHead>}
+            {<TableHead>Doctor</TableHead>}
             <TableHead>Date</TableHead>
             <TableHead>Time</TableHead>
             <TableHead>Status</TableHead>
@@ -76,18 +71,18 @@ export const AppointmentsList = ({ filter = 'patient', id }) => {
         <TableBody>
           {appointments.map((appointment) => (
             <TableRow key={appointment.id}>
-              {filter != "patient" && (
+              {
                 <TableCell>
                   {appointment.patient?.firstName}{" "}
                   {appointment.patient?.lastName}
                 </TableCell>
-              )}
-              {filter != "doctor" && (
+              }
+              {
                 <TableCell>
                   Dr. {appointment.doctor?.firstName}{" "}
                   {appointment.doctor?.lastName}
                 </TableCell>
-              )}
+              }
               <TableCell>
                 {format(new Date(appointment.appointmentDate), "PPP")}
               </TableCell>

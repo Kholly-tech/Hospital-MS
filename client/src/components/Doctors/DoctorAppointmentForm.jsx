@@ -10,15 +10,17 @@ import { CalendarIcon } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { getAllDoctors, getAllPatients, createAppointment, cancelAppointment } from '../../functions/allFunctions';
 
-export const AppointmentForm = ({ filter, appointment, onSuccess }) => {
+export const DoctorAppointmentForm = ({ filter, appointment, onSuccess }) => {
   console.log(appointment);
   const [formData, setFormData] = useState({
-    patientId: appointment?.patientId || '',
-    doctorId: appointment?.doctorId || '',
-    appointmentDate: appointment?.appointmentDate ? new Date(appointment.appointmentDate) : new Date(),
-    startTime: appointment?.startTime || '09:00',
-    endTime: appointment?.endTime || '10:00',
-    notes: appointment?.notes || '',
+    patientId: appointment?.patientId || "",
+    doctorId: appointment?.doctorId || "",
+    appointmentDate: appointment?.appointmentDate
+      ? new Date(appointment.appointmentDate)
+      : new Date(),
+    startTime: appointment?.startTime || "09:00",
+    endTime: appointment?.endTime || "10:00",
+    notes: appointment?.notes || "",
   });
   const [doctors, setDoctors] = useState([]);
   const [patients, setPatients] = useState([]);
@@ -29,12 +31,12 @@ export const AppointmentForm = ({ filter, appointment, onSuccess }) => {
       try {
         const [doctorsData, patientsData] = await Promise.all([
           getAllDoctors(),
-          getAllPatients()
+          getAllPatients(),
         ]);
         setDoctors(doctorsData);
         setPatients(patientsData);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
     fetchData();
@@ -51,7 +53,7 @@ export const AppointmentForm = ({ filter, appointment, onSuccess }) => {
       }
       onSuccess();
     } catch (error) {
-      console.error('Error saving appointment:', error);
+      console.error("Error saving appointment:", error);
     } finally {
       setLoading(false);
     }
@@ -61,12 +63,18 @@ export const AppointmentForm = ({ filter, appointment, onSuccess }) => {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label>Patient</Label>
-        <Select required value={formData.patientId} onValueChange={(value) => setFormData({...formData, patientId: value})}>
+        <Select
+          required
+          value={formData.patientId}
+          onValueChange={(value) =>
+            setFormData({ ...formData, patientId: value })
+          }
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select patient" />
           </SelectTrigger>
           <SelectContent>
-            {patients.map(patient => (
+            {patients.map((patient) => (
               <SelectItem key={patient.id} value={patient.id}>
                 {patient.firstName} {patient.lastName}
               </SelectItem>
@@ -77,14 +85,20 @@ export const AppointmentForm = ({ filter, appointment, onSuccess }) => {
 
       <div className="space-y-2">
         <Label>Doctor</Label>
-        <Select value={formData.doctorId} onValueChange={(value) => setFormData({...formData, doctorId: value})}>
+        <Select
+          value={formData.doctorId}
+          onValueChange={(value) =>
+            setFormData({ ...formData, doctorId: value })
+          }
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select doctor" />
           </SelectTrigger>
           <SelectContent>
-            {doctors.map(doctor => (
+            {doctors.map((doctor) => (
               <SelectItem key={doctor.id} value={doctor.id}>
-                Dr. {doctor.firstName} {doctor.lastName} ({doctor.specialization})
+                Dr. {doctor.firstName} {doctor.lastName} (
+                {doctor.specialization})
               </SelectItem>
             ))}
           </SelectContent>
@@ -103,14 +117,20 @@ export const AppointmentForm = ({ filter, appointment, onSuccess }) => {
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {formData.appointmentDate ? format(formData.appointmentDate, "PPP") : <span>Pick a date</span>}
+              {formData.appointmentDate ? (
+                format(formData.appointmentDate, "PPP")
+              ) : (
+                <span>Pick a date</span>
+              )}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0">
             <Calendar
               mode="single"
               selected={formData.appointmentDate}
-              onSelect={(date) => setFormData({...formData, appointmentDate: date})}
+              onSelect={(date) =>
+                setFormData({ ...formData, appointmentDate: date })
+              }
               initialFocus
               showOutsideDays={true}
             />
@@ -121,33 +141,37 @@ export const AppointmentForm = ({ filter, appointment, onSuccess }) => {
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Start Time</Label>
-          <Input 
-            type="time" 
+          <Input
+            type="time"
             value={formData.startTime}
-            onChange={(e) => setFormData({...formData, startTime: e.target.value})}
+            onChange={(e) =>
+              setFormData({ ...formData, startTime: e.target.value })
+            }
           />
         </div>
         <div className="space-y-2">
           <Label>End Time</Label>
-          <Input 
-            type="time" 
+          <Input
+            type="time"
             value={formData.endTime}
-            onChange={(e) => setFormData({...formData, endTime: e.target.value})}
+            onChange={(e) =>
+              setFormData({ ...formData, endTime: e.target.value })
+            }
           />
         </div>
       </div>
 
       <div className="space-y-2">
         <Label>Notes</Label>
-        <Input 
+        <Input
           value={formData.notes}
-          onChange={(e) => setFormData({...formData, notes: e.target.value})}
+          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
           placeholder="Additional notes"
         />
       </div>
 
       <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? 'Saving...' : 'Save Appointment'}
+        {loading ? "Saving..." : "Save Appointment"}
       </Button>
     </form>
   );

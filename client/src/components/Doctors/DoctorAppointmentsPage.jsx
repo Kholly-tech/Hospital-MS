@@ -1,39 +1,40 @@
-import { useState } from 'react';
-import { Button } from '../ui/button';
-import { AppointmentsList } from '../Appointment/AppointmentsList';
-import { AppointmentForm } from '../Appointment/AppointmentForm';
+import { useState } from "react";
+import { Button } from "../ui/button";
+import { AppointmentsList } from "./DoctorAppointmentsList";
+import { AppointmentForm } from "../Appointment/AppointmentForm";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '../ui/dialog';
-import useUser from '../../services/hooks/useUser';
+} from "../ui/dialog";
+import useUser from "../../services/hooks/useUser";
 
-export const AppointmentsPage = () => {
+export const DoctorAppointmentsPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const { currentUser } = useUser();
 
   const handleSuccess = () => {
-    alert('Appointment Successful');
+    alert("Appointment Successful");
     setIsDialogOpen(false);
-    setRefreshKey(prev => prev + 1);
+    setRefreshKey((prev) => prev + 1);
   };
 
   let filter;
-  let role = currentUser && currentUser.roles && currentUser.roles[0] || 'Patient';
+  let role =
+    (currentUser && currentUser.roles && currentUser.roles[0]) || "Patient";
   switch (role) {
-    case 'Doctor':
-      filter = 'doctor';
+    case "Doctor":
+      filter = "doctor";
       break;
-    case 'Admin':
-      filter = 'Admin';
+    case "Admin":
+      filter = "Admin";
       break;
-  
+
     default:
-      filter = 'patient'
+      filter = "patient";
       break;
   }
 
@@ -53,7 +54,11 @@ export const AppointmentsPage = () => {
           </DialogContent>
         </Dialog>
       </div>
-      <AppointmentsList key={refreshKey} filter={filter} id={currentUser?.refId} />
+      <AppointmentsList
+        key={refreshKey}
+        filter={filter}
+        id={currentUser?.refId}
+      />
     </div>
   );
 };

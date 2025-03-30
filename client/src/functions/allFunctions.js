@@ -155,3 +155,67 @@ export const getPatientAppointments = async (patientId) => {
         throw error;
     }
 };
+
+export const getPrescriptions = async (params = {}) => {
+    try {
+        const query = new URLSearchParams(params).toString();
+        const res = await getDataAPI(`Prescriptions?${query}`);
+        return res;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getPrescriptionById = async (id) => {
+    try {
+        const res = await getDataAPI(`Prescriptions/${id}`);
+        return res;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getPrescriptionsByDoctor = async (doctorId) => {
+    try {
+        const res = await getDataAPI(`Prescriptions/doctor/${doctorId}`);
+        return res;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const getPrescriptionsByPatient = async (patientId) => {
+    try {
+        const res = await getDataAPI(`Prescriptions/patient/${patientId}`);
+        return res;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const createPrescription = async (data) => {
+    try {
+        const res = await postDataAPI('Prescriptions', data);
+        return res;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const updatePrescription = async (id, data) => {
+    try {
+        const res = await putDataAPI(`Prescriptions/${id}`, data);
+        return res;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deletePrescription = async (id) => {
+    try {
+        const res = await deleteDataAPI(`Prescriptions/${id}`);
+        return res;
+    } catch (error) {
+        throw error;
+    }
+};
