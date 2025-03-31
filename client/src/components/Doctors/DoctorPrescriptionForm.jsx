@@ -7,7 +7,7 @@ import {
   updatePrescription,
 } from "../../functions/allFunctions";
 
-export const AdminPrescriptionForm = ({ prescription, onSuccess }) => {
+export const DoctorPrescriptionForm = ({ prescription, onSuccess }) => {
   const [formData, setFormData] = useState({
     appointmentId: prescription?.appointmentId || "",
     doctorId: prescription?.doctorId || "",

@@ -19,11 +19,20 @@ namespace HospitalAppointmentSystem.Infrastructure.Repositories
         public async Task<Prescription?> GetByIdWithDetailsAsync(int id)
             => await _context.Prescriptions
                 .Include(p => p.Doctor)
+                    .ThenInclude(d => d.User)
                 .Include(p => p.Patient)
+                    .ThenInclude(p => p.User)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
         public IQueryable<Prescription> GetQueryable()
-            => _context.Prescriptions.AsQueryable();
+        {
+            return _context.Prescriptions
+                .Include(p => p.Doctor)
+                    .ThenInclude(d => d.User)
+                .Include(p => p.Patient)
+                    .ThenInclude(p => p.User)
+                .AsQueryable();
+        }
 
         public async Task AddAsync(Prescription prescription)
         {
@@ -49,7 +58,9 @@ namespace HospitalAppointmentSystem.Infrastructure.Repositories
             var query = _context.Prescriptions
                 .Where(p => p.DoctorId == doctorId)
                 .Include(p => p.Doctor)
-                .Include(p => p.Patient);
+                    .ThenInclude(d => d.User)
+                .Include(p => p.Patient)
+                    .ThenInclude(p => p.User);
 
             var totalCount = await query.CountAsync();
             
@@ -68,7 +79,9 @@ namespace HospitalAppointmentSystem.Infrastructure.Repositories
             var query = _context.Prescriptions
                 .Where(p => p.PatientId == patientId)
                 .Include(p => p.Doctor)
-                .Include(p => p.Patient);
+                    .ThenInclude(d => d.User)
+                .Include(p => p.Patient)
+                    .ThenInclude(p => p.User);
 
             var totalCount = await query.CountAsync();
             

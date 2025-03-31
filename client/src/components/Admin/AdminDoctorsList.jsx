@@ -3,10 +3,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { getAllDoctors, deleteDoctor } from '../../functions/allFunctions';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { AdminDoctorForm } from './AdminDoctorForm';
 
 export const AdminDoctorsList = () => {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [doctor, setDoctor] = useState(null);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -21,6 +24,12 @@ export const AdminDoctorsList = () => {
     };
     fetchDoctors();
   }, []);
+
+  const handleEdit = () => {
+    alert("Doctor updated successfully!");
+    setDoctor(null);
+    // setRefreshKey((prev) => prev + 1);
+  }
 
   const handleDelete = async (doctorId) => {
     try {
@@ -53,11 +62,16 @@ export const AdminDoctorsList = () => {
               </TableCell>
               <TableCell>{doctor.email}</TableCell>
               <TableCell>
-                <Badge variant="outline">{doctor.specialization}</Badge>
+                <Badge variant="outline" className='capitalize'>{doctor.specialization}</Badge>
               </TableCell>
               <TableCell>{doctor.licenseNumber}</TableCell>
               <TableCell>
-                <Button variant="outline" size="sm" className="mr-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mr-2"
+                  onClick={() => setDoctor(doctor)}
+                >
                   Edit
                 </Button>
                 <Button
@@ -72,6 +86,14 @@ export const AdminDoctorsList = () => {
           ))}
         </TableBody>
       </Table>
+      <Dialog open={doctor != null} onOpenChange={() => setDoctor(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Doctor</DialogTitle>
+          </DialogHeader>
+          <AdminDoctorForm doctor={doctor} onSuccess={handleEdit} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

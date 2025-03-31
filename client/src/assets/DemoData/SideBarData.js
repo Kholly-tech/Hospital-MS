@@ -66,12 +66,12 @@ export const data = {
       items: [
         {
           title: "View Appointments",
-          url: "/appointments",
+          url: "/doctor/appointments",
         },
-        {
-          title: "Shecdule Appointment",
-          url: "/appointments/new",
-        },
+        // {
+        //   title: "Shecdule Appointment",
+        //   url: "/appointments/new",
+        // },
       ],
     },
     {
@@ -81,11 +81,11 @@ export const data = {
       items: [
         {
           title: "Issue a Prescription",
-          url: "/prescription/view",
+          url: "/doctor/prescriptions/add",
         },
         {
           title: "Manage Prescriptions",
-          url: "/prescription/view",
+          url: "/doctor/prescriptions",
         },
       ],
     },
@@ -110,7 +110,7 @@ export const data = {
       items: [
         {
           title: "Manage Users",
-          url: "users",
+          url: "/admin/users",
         },
       ],
     },
@@ -122,7 +122,7 @@ export const data = {
       items: [
         {
           title: "Manage Doctors",
-          url: "doctors",
+          url: "/admin/doctors",
         },
       ],
     },
@@ -133,7 +133,7 @@ export const data = {
       items: [
         {
           title: "View All Appointments",
-          url: "appointments",
+          url: "/admin/appointments",
         },
       ],
     },
@@ -144,7 +144,7 @@ export const data = {
       items: [
         {
           title: "Manage Prescriptions",
-          url: "prescriptions",
+          url: "/admin/prescriptions",
         },
       ],
     },

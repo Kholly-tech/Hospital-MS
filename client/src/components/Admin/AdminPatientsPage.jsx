@@ -23,8 +23,8 @@ export const AdminPatientsPage = () => {
 
   return (
     <MainLayout>
-      <div className="space-y-4">
-        <div className="flex justify-between items-center mt-4 mx-8">
+      <div className="py-4 space-y-4">
+        <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold">Patients</h2>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>

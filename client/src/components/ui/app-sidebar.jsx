@@ -26,7 +26,7 @@ export function AppSidebar({
     email: currentUser.email,
     refId: currentUser.refId,
   }
-  console.log(Auser);
+  // console.log(Auser);
   let nav = data.navMain;
   switch ( (currentUser.roles && currentUser?.roles[0]) ?? null) {
     case 'Patient':

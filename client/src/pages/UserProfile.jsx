@@ -12,6 +12,7 @@ import {
   User,
   Stethoscope,
   ClipboardList,
+  User2,
 } from "lucide-react";
 import { format } from "date-fns";
 import { getUserbyId } from "../functions/userFunctions";
@@ -80,7 +81,7 @@ export const UserProfile = () => {
             <CardHeader className="border-b pb-6">
               <div className="flex flex-col md:flex-row items-center gap-6">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={user.avatar} />
+                  <AvatarImage src={user?.avatar || User2} />
                   <AvatarFallback>
                     {user.firstName.charAt(0)}
                     {user.lastName.charAt(0)}

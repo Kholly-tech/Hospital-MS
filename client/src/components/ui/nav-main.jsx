@@ -17,10 +17,12 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "./sidebar"
+import { useNavigate } from "react-router-dom";
 
 export function NavMain({
   items
 }) {
+  const navigate = useNavigate();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -45,7 +47,7 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
+                        <a className="cursor-pointer" onClick={() => navigate(subItem.url)}>
                           <span>{subItem.title}</span>
                         </a>
                       </SidebarMenuSubButton>

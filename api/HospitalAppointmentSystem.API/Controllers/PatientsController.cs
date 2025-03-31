@@ -144,6 +144,19 @@ namespace HospitalAppointmentSystem.API.Controllers
                 }
 
                 _mapper.Map(patientDto, existingPatient);
+                // Update User entity
+                if (existingPatient.User != null)
+                {
+                    existingPatient.User.FirstName = patientDto.FirstName;
+                    existingPatient.User.LastName = patientDto.LastName;
+                    existingPatient.User.Email = patientDto.Email;
+                    existingPatient.User.PhoneNumber = patientDto.PhoneNumber;
+                    existingPatient.User.Gender = patientDto.Gender;
+                    existingPatient.User.DateOfBirth = patientDto.DateOfBirth;
+                    
+                    // Update user in database
+                    await _userManager.UpdateAsync(existingPatient.User);
+                }
                 await _patientRepository.UpdateAsync(existingPatient);
                 await transaction.CommitAsync();
 

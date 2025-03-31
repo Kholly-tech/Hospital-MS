@@ -38,7 +38,7 @@ export function NavUser({
   const { isMobile } = useSidebar()
   const {logoutUser} = useUser();
   const navigate = useNavigate();
-  console.log(user)
+  // console.log(user)
 
   const handleLogOut = async() => {
     try {

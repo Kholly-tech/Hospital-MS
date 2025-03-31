@@ -249,7 +249,11 @@ export const PatientAppointmentForm = ({ filter, appointment, onSuccess }) => {
       </div>
 
       <Button type="submit" className="w-full" disabled={loading || timeError}>
-        {loading ? "Saving..." : "Save Appointment"}
+        {loading
+          ? "Saving..."
+          : appointment
+          ? "Update Appointment"
+          : "Schedule Appointment"}
       </Button>
     </form>
   );

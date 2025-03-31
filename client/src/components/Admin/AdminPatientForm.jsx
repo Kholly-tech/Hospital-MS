@@ -12,7 +12,9 @@ import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import { createPatient, updatePatient } from '../../functions/allFunctions';
 
 export const AdminPatientForm = ({ patient, onSuccess }) => {
+  console.log(patient);
   const [formData, setFormData] = useState({
+    id: patient?.id || null,
     firstName: patient?.firstName || "",
     lastName: patient?.lastName || "",
     email: patient?.email || "",
@@ -22,7 +24,7 @@ export const AdminPatientForm = ({ patient, onSuccess }) => {
       ? new Date(patient.dateOfBirth)
       : new Date(),
     address: patient?.address || "",
-    insuranceProvider: patient?.insuranceProvider || "",
+    insuranceProvider: patient?.insuranceProvider.toLowerCase() || "",
     insurancePolicyNumber: patient?.insurancePolicyNumber || "",
     password: "",
   });
@@ -160,7 +162,7 @@ export const AdminPatientForm = ({ patient, onSuccess }) => {
       <div className="space-y-2">
         <Label htmlFor="insuranceProvider">Insurance Provider</Label>
         <Select
-          value={formData.insuranceProvider}
+          value={formData.insuranceProvider || patient.insuranceProvider}
           onValueChange={(value) =>
             setFormData({ ...formData, insuranceProvider: value })
           }

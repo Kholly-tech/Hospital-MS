@@ -3,10 +3,19 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { getAllPatients, deletePatient } from '../../functions/allFunctions';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { AdminPatientForm } from './AdminPatientForm';
+
 
 export const AdminPatientsList = () => {
   const [patients, setPatients] = useState([]);
+  const [patient, setPatient] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const handleSuccess = () => {
+    alert("Patient added successfully!");
+    setPatient(null);
+  }
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -35,6 +44,14 @@ export const AdminPatientsList = () => {
 
   return (
     <div className="space-y-4">
+      <Dialog open={patient != null} onOpenChange={() => setPatient(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Patient</DialogTitle>
+          </DialogHeader>
+          <AdminPatientForm patient={patient} onSuccess={handleSuccess} />
+        </DialogContent>
+      </Dialog>
       <Table>
         <TableHeader>
           <TableRow>
@@ -59,7 +76,12 @@ export const AdminPatientsList = () => {
                 </Badge>
               </TableCell>
               <TableCell>
-                <Button variant="outline" size="sm" className="mr-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mr-2"
+                  onClick={() => setPatient(patient)}
+                >
                   Edit
                 </Button>
                 <Button

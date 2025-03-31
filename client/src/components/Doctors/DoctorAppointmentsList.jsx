@@ -1,12 +1,31 @@
-import { useState, useEffect } from 'react';
-import { Button } from '../ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
-import { Badge } from '../ui/badge';
-import { format } from 'date-fns';
-import { getAllAppointments, cancelAppointment, getDoctorAppointments, getPatientAppointments } from '../../functions/allFunctions';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import { AppointmentForm } from './DoctorAppointmentForm';
-import useUser from '../../services/hooks/useUser';
+import { useState, useEffect } from "react";
+import { Button } from "../ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import { Badge } from "../ui/badge";
+import { format } from "date-fns";
+import {
+  getAllAppointments,
+  cancelAppointment,
+  getDoctorAppointments,
+  getPatientAppointments,
+} from "../../functions/allFunctions";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import { DoctorAppointmentForm } from "./DoctorAppointmentForm";
+import useUser from "../../services/hooks/useUser";
+import { toast } from "sonner";
 
 export const DoctorAppointmentsList = () => {
   const [appointments, setAppointments] = useState([]);
@@ -18,10 +37,11 @@ export const DoctorAppointmentsList = () => {
     const fetchAppointments = async () => {
       try {
         let data;
-        data = await getAllAppointments();
-        setAppointments(data);
+        data = await getDoctorAppointments(currentUser?.refId);
+        setAppointments(data || []);
       } catch (error) {
         console.error("Error fetching appointments:", error);
+        toast.error("Failed to load appointments");
       } finally {
         setLoading(false);
       }
@@ -34,100 +54,121 @@ export const DoctorAppointmentsList = () => {
     try {
       await cancelAppointment(appointmentId);
       setAppointments(appointments.filter((app) => app.id !== appointmentId));
+      toast.success("Appointment cancelled successfully");
     } catch (error) {
       console.error("Error cancelling appointment:", error);
+      toast.error("Failed to cancel appointment");
     }
   };
 
-  if (loading) return <div>Loading appointments...</div>;
+  if (loading)
+    return (
+      <div className="w-full p-8 text-center">
+        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+        <p>Loading appointments...</p>
+      </div>
+    );
 
   return (
-    <div className="space-y-4 overflow-x-hidden max-w-full">
+    <div className="w-full space-y-4">
       {appointment != null && (
         <Dialog open={appointment.id} onOpenChange={() => setAppointment(null)}>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Create New Appointment</DialogTitle>
+              <DialogTitle>Edit Appointment</DialogTitle>
             </DialogHeader>
-            <AppointmentForm
+            <DoctorAppointmentForm
+              appointment={appointment}
               onSuccess={() => {
                 setAppointment(null);
+                getDoctorAppointments(currentUser?.refId).then((data) => {
+                  setAppointments(data || []);
+                });
               }}
             />
           </DialogContent>
         </Dialog>
       )}
-      <Table>
-        <TableHeader>
-          <TableRow className="font-medium text-lg">
-            {<TableHead>Patient</TableHead>}
-            {<TableHead>Doctor</TableHead>}
-            <TableHead>Date</TableHead>
-            <TableHead>Time</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {appointments.map((appointment) => (
-            <TableRow key={appointment.id}>
-              {
-                <TableCell>
-                  {appointment.patient?.firstName}{" "}
-                  {appointment.patient?.lastName}
-                </TableCell>
-              }
-              {
-                <TableCell>
-                  Dr. {appointment.doctor?.firstName}{" "}
-                  {appointment.doctor?.lastName}
-                </TableCell>
-              }
-              <TableCell>
-                {format(new Date(appointment.appointmentDate), "PPP")}
-              </TableCell>
-              <TableCell>
-                {appointment.startTime} - {appointment.endTime}
-              </TableCell>
-              <TableCell>
-                <Badge
-                  variant={
-                    appointment.status === "pending"
-                      ? "secondary"
-                      : appointment.status === "approved"
-                      ? "default"
-                      : appointment.status === "cancelled"
-                      ? "destructive"
-                      : "outline"
-                  }
-                >
-                  {appointment.status}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                {appointment.status === "pending" && (
-                  <div className="flex gap-2">
-                    <Button
-                      variant="default"
-                      size="sm"
-                      onClick={() => setAppointment(appointment)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleCancel(appointment.id)}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                )}
-              </TableCell>
+
+      <div className="w-full border rounded-lg overflow-hidden">
+        <Table className="w-full">
+          <TableHeader className="bg-muted/50">
+            <TableRow>
+              <TableHead className="w-[20%]">Patient</TableHead>
+              <TableHead className="w-[20%]">Date</TableHead>
+              <TableHead className="w-[20%]">Time</TableHead>
+              <TableHead className="w-[20%]">Status</TableHead>
+              <TableHead className="w-[20%] text-right">Actions</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {appointments.length > 0 ? (
+              appointments.map((appointment) => (
+                <TableRow key={appointment.id} className="hover:bg-muted/50">
+                  <TableCell className="font-medium">
+                    {appointment.patient?.firstName}{" "}
+                    {appointment.patient?.lastName}
+                  </TableCell>
+                  <TableCell>
+                    {format(
+                      new Date(appointment.appointmentDate),
+                      "MMM dd, yyyy"
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {appointment.startTime} - {appointment.endTime}
+                  </TableCell>
+                  <TableCell>
+                    <Badge
+                      variant={
+                        appointment.status === "pending"
+                          ? "secondary"
+                          : appointment.status === "approved"
+                          ? "default"
+                          : "destructive"
+                      }
+                      className="capitalize"
+                    >
+                      {appointment.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {appointment.status === "pending" && (
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setAppointment(appointment)}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleCancel(appointment.id)}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-8">
+                  <div className="flex flex-col items-center justify-center space-y-2">
+                    <p className="text-lg font-medium">No appointments found</p>
+                    <p className="text-muted-foreground">
+                      You don't have any scheduled appointments yet.
+                    </p>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };

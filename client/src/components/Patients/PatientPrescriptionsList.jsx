@@ -34,6 +34,7 @@ export const PatientPrescriptionsList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterId, setFilterId] = useState("");
+  const navigate = useNavigate();
   const { currentUser } = useUser();
 
   useEffect(() => {
@@ -113,20 +114,22 @@ export const PatientPrescriptionsList = () => {
             <TableHead>Prescribed By</TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Duration</TableHead>
-            <TableHead>Actions</TableHead>
+            {/* <TableHead>Actions</TableHead> */}
           </TableRow>
         </TableHeader>
         <TableBody>
           {prescriptions &&
             prescriptions.map((prescription) => (
-              <div
-                key={prescription.id}
-                onClick={() => {
-                  const navigate = useNavigate();
-                  navigate(`/prescription/${prescription.id}`);
-                }}
-              >
-                <TableRow key={prescription.id}>
+              // <div
+              //   key={prescription.id}
+              //   onClick={() => {
+              //     const navigate = useNavigate();
+              //     navigate(`/prescription/${prescription.id}`);
+              //   }}
+              // >
+                <TableRow key={prescription.id} onClick={() => {
+                  navigate(`/prescriptions/${prescription.id}`);
+                }}>
                   <TableCell>{prescription.medication}</TableCell>
                   <TableCell>{prescription.dosage}</TableCell>
                   <TableCell>
@@ -140,28 +143,16 @@ export const PatientPrescriptionsList = () => {
                     )}
                   </TableCell>
                   <TableCell>{prescription.duration} days</TableCell>
-                  <TableCell>
-                    <Button variant="outline" size="sm" className="mr-2">
-                      Edit
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(prescription.id)}
-                    >
-                      Delete
-                    </Button>
-                  </TableCell>
                 </TableRow>
-              </div>
+              // </div>
             ))}
-          {prescriptions.length === 0 && (
+          {/* {prescriptions.length === 0 && (
             <TableRow>
               <TableCell colSpan={6} className="text-center text-2xl mt-6">
                 No prescriptions found.
               </TableCell>
             </TableRow>
-          )}
+          )} */}
         </TableBody>
       </Table>
     </div>

@@ -157,13 +157,27 @@ namespace HospitalAppointmentSystem.API.Controllers
                     return BadRequest("ID mismatch");
                 }
 
-                var existingDoctor = await _doctorRepository.GetByIdAsync(id);
+                var existingDoctor = await _doctorRepository.GetByIdWithDetailsAsync(id);
                 if (existingDoctor == null)
                 {
                     return NotFound();
                 }
 
                 _mapper.Map(doctorDto, existingDoctor);
+                // Update User entity
+                if (existingDoctor.User != null)
+                {
+                    existingDoctor.User.FirstName = doctorDto.FirstName;
+                    existingDoctor.User.LastName = doctorDto.LastName;
+                    existingDoctor.User.Email = doctorDto.Email;
+                    existingDoctor.User.PhoneNumber = doctorDto.PhoneNumber;
+                    existingDoctor.User.Gender = doctorDto.Gender;
+                    existingDoctor.User.DateOfBirth = doctorDto.DateOfBirth;
+                    
+                    // Update user in database
+                    await _userManager.UpdateAsync(existingDoctor.User);
+                }
+                
                 await _doctorRepository.UpdateAsync(existingDoctor);
                 await transaction.CommitAsync();
 

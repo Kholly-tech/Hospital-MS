@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { AppointmentsList } from "./DoctorAppointmentsList";
-import { AppointmentForm } from "../Appointment/AppointmentForm";
+import { DoctorAppointmentsList } from "./DoctorAppointmentsList";
+import { DoctorAppointmentForm } from "./DoctorAppointmentForm";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import useUser from "../../services/hooks/useUser";
+import { MainLayout } from "../../layout/MainLayout";
 
 export const DoctorAppointmentsPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -17,7 +18,7 @@ export const DoctorAppointmentsPage = () => {
   const { currentUser } = useUser();
 
   const handleSuccess = () => {
-    alert("Appointment Successful");
+    alert("Appointment Scheduled Successful");
     setIsDialogOpen(false);
     setRefreshKey((prev) => prev + 1);
   };
@@ -39,26 +40,28 @@ export const DoctorAppointmentsPage = () => {
   }
 
   return (
-    <div className="space-y-4 mt-8 max-w-full">
-      <div className="flex justify-between items-center mx-6">
-        <h2 className="text-2xl font-bold">Appointments</h2>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>Create Appointment</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Create New Appointment</DialogTitle>
-            </DialogHeader>
-            <AppointmentForm filter={filter} onSuccess={handleSuccess} />
-          </DialogContent>
-        </Dialog>
+    <MainLayout>
+      <div className="space-y-4 mt-8 max-w-full">
+        <div className="flex justify-between items-center mx-6">
+          <h2 className="text-2xl font-bold">Appointments</h2>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>Create Appointment</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create New Appointment</DialogTitle>
+              </DialogHeader>
+              <DoctorAppointmentForm filter={filter} onSuccess={handleSuccess} />
+            </DialogContent>
+          </Dialog>
+        </div>
+        <DoctorAppointmentsList
+          key={refreshKey}
+          filter={filter}
+          id={currentUser?.refId}
+        />
       </div>
-      <AppointmentsList
-        key={refreshKey}
-        filter={filter}
-        id={currentUser?.refId}
-      />
-    </div>
+    </MainLayout>
   );
 };

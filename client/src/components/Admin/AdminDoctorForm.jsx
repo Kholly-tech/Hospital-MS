@@ -13,6 +13,7 @@ import { createDoctor, updateDoctor } from "../../functions/allFunctions";
 
 export const AdminDoctorForm = ({ doctor, onSuccess }) => {
   const [formData, setFormData] = useState({
+    id: doctor?.id || null,
     firstName: doctor?.firstName || "",
     lastName: doctor?.lastName || "",
     email: doctor?.email || "",
@@ -24,6 +25,7 @@ export const AdminDoctorForm = ({ doctor, onSuccess }) => {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  // console.log(doctor);
 
   const specializations = [
     "Cardiology",
@@ -47,6 +49,7 @@ export const AdminDoctorForm = ({ doctor, onSuccess }) => {
     setLoading(true);
     try {
       if (doctor) {
+        // return console.log(formData);
         await updateDoctor(doctor.id, formData);
       } else {
         await createDoctor(formData);

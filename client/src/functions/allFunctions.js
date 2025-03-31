@@ -86,6 +86,7 @@ export const createDoctor = async (data) => {
 export const updateDoctor = async (id, data) => {
     try {
         const res = await putDataAPI(`Doctors/${id}`, data);
+        console.log(res);
         return res;
     } catch (error) {
         throw error;
@@ -157,13 +158,43 @@ export const getPatientAppointments = async (patientId) => {
 };
 
 export const getPrescriptions = async (params = {}) => {
-    try {
-        const query = new URLSearchParams(params).toString();
-        const res = await getDataAPI(`Prescriptions?${query}`);
-        return res;
-    } catch (error) {
-        throw error;
-    }
+  try {
+    const query = new URLSearchParams(params).toString();
+    const res = await getDataAPI(`Prescriptions?${query}`);
+    return res;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getPrescriptionsByDoctor = async (
+  doctorId,
+  pageNumber = 1,
+  pageSize = 10
+) => {
+  try {
+    const res = await getDataAPI(
+      `Prescriptions/doctor/${doctorId}?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    );
+    return res;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getPrescriptionsByPatient = async (
+  patientId,
+  pageNumber = 1,
+  pageSize = 10
+) => {
+  try {
+    const res = await getDataAPI(
+      `Prescriptions/patient/${patientId}?pageNumber=${pageNumber}&pageSize=${pageSize}`
+    );
+    return res;
+  } catch (error) {
+    throw error;
+  }
 };
 
 export const getPrescriptionById = async (id) => {
@@ -175,23 +206,23 @@ export const getPrescriptionById = async (id) => {
     }
 };
 
-export const getPrescriptionsByDoctor = async (doctorId) => {
-    try {
-        const res = await getDataAPI(`Prescriptions/doctor/${doctorId}`);
-        return res;
-    } catch (error) {
-        throw error;
-    }
-};
+// export const getPrescriptionsByDoctor = async (doctorId) => {
+//     try {
+//         const res = await getDataAPI(`Prescriptions/doctor/${doctorId}`);
+//         return res;
+//     } catch (error) {
+//         throw error;
+//     }
+// };
 
-export const getPrescriptionsByPatient = async (patientId) => {
-    try {
-        const res = await getDataAPI(`Prescriptions/patient/${patientId}`);
-        return res;
-    } catch (error) {
-        throw error;
-    }
-};
+// export const getPrescriptionsByPatient = async (patientId) => {
+//     try {
+//         const res = await getDataAPI(`Prescriptions/patient/${patientId}`);
+//         return res;
+//     } catch (error) {
+//         throw error;
+//     }
+// };
 
 export const createPrescription = async (data) => {
     try {

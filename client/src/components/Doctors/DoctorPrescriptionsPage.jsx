@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
-import { AdminPrescriptionsList } from "./DoctorPrescriptionsList";
-import { AdminPrescriptionForm } from "./DoctorPrescriptionForm";
+import { DoctorPrescriptionsList } from "./DoctorPrescriptionsList";
+import { DoctorPrescriptionForm } from "./DoctorPrescriptionForm";
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
 } from "../ui/dialog";
 import { MainLayout } from "../../layout/MainLayout";
 
-export const AdminPrescriptionsPage = () => {
+export const DoctorPrescriptionsPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -34,11 +34,11 @@ export const AdminPrescriptionsPage = () => {
               <DialogHeader>
                 <DialogTitle>Create New Prescription</DialogTitle>
               </DialogHeader>
-              <AdminPrescriptionForm onSuccess={handleSuccess} />
+              <DoctorPrescriptionForm onSuccess={handleSuccess} />
             </DialogContent>
           </Dialog>
         </div>
-        <AdminPrescriptionsList key={refreshKey} />
+        <DoctorPrescriptionsList key={refreshKey} />
       </div>
     </MainLayout>
   );

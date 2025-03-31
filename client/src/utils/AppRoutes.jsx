@@ -18,13 +18,16 @@ import { AdminPatientsPage } from "../components/Admin/AdminPatientsPage";
 import AdminAppointments from "../components/Admin/AdminAppointments";
 import AdminDashBoard from "../pages/Admin/DashBoard";
 import UserDashBoard from "../pages/User/DashBoard";
-// import DoctorDashBoard from "../pages/Doctor/DashBoard";
+import DoctorDashBoard from "../pages/Doctor/DashBoard";
 import { AdminDoctorsPage } from "../components/Admin/AdminDoctorsPage";
 import { AdminPrescriptionsPage } from "../components/Prescription/AdminPrescriptionsPage";
 import { PatientAppointmentsPage } from "../components/Patients/PatientAppointmentsPage";
 import { PatientPrescriptionsPage } from "../components/Patients/PatientPrescriptionsPage";
 import { PatientPrescriptionDetails } from "../components/Patients/PatientPrescriptionDetails";
 import { UserProfile } from "../pages/UserProfile";
+import { DoctorAppointmentsPage } from "../components/Doctors/DoctorAppointmentsPage";
+import { DoctorPrescriptionsPage } from "../components/Doctors/DoctorPrescriptionsPage";
+import DoctorAddPrescription from "../components/Doctors/DoctorAddPrescription";
 
 const UserRoutes = () => {
   const [loading, setLoading] = useState(true);
@@ -116,7 +119,14 @@ const PublicRoutes = () => {
   const { currentUser, isAuthenticated, fetchAuthUser } = useUser();
 
   useEffect(() => {
-    if (isAuthenticated) navigate("/dashboard");
+    if (isAuthenticated) {
+      const roles = currentUser?.roles && currentUser?.roles;
+      roles.includes("Doctor")
+        ? navigate("/doctor/dashboard")
+        : roles.includes("Patient")
+        ? navigate("/dashboard")
+        : navigate("/admin/dashboard");
+    };
   }, [isAuthenticated]);
 
   // if(!isAuthenticated) return <Login/>;
@@ -137,9 +147,10 @@ const router = createBrowserRouter([
   {
     element: <DoctorRoutes />,
     children: [
-      // { path: "doctor/dashboard", element: <DoctorDashBoard /> },
-      // { path: "doctor/appointments", element: <Appointments /> },
-      // { path: "doctor/prescriptions", element: <Appointments /> },
+      { path: "doctor/dashboard", element: <DoctorDashBoard /> },
+      { path: "doctor/appointments", element: <DoctorAppointmentsPage /> },
+      { path: "doctor/prescriptions", element: <DoctorPrescriptionsPage /> },
+      { path: "doctor/prescriptions/add", element: <DoctorAddPrescription /> },
       // { path: "doctor/profile", element: <Appointments /> },
       // { path: "patient/profile/:refId", element: <Appointments /> },
     ],
@@ -152,6 +163,7 @@ const router = createBrowserRouter([
       { path: "admin/doctors", element: <AdminDoctorsPage /> },
       { path: "admin/users", element: <AdminPatientsPage /> },
       { path: "admin/prescriptions", element: <AdminPrescriptionsPage /> },
+      { path: "admin/prescriptions/:id", element: <PatientPrescriptionDetails /> },
       { path: "admin/users/:id", element: <UserProfile /> },
     ],
   },

@@ -31,7 +31,7 @@ export const signin = async (userDet) => {
 export const getUserbyId = async (id) => {
     try {
         const res = await postDataAPI(`Account/user/${id}`);
-    console.log(res);
+        console.log(res);
         return res;
     } catch (error) {
         throw error;
