@@ -6,7 +6,7 @@ let serverUrl;
 if(process.env.NODE_ENV === 'development') {
     serverUrl = 'http://localhost:5000'
 } else {
-    serverUrl = 'https://your-production-url.com'
+    serverUrl = "https://hospital-ms-sb0k.onrender.com";
 }
 export const apiUrl = `${serverUrl}/api`;
 const pendingRequests = new Map();
