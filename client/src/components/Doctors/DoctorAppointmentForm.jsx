@@ -35,7 +35,6 @@ export const DoctorAppointmentForm = ({ filter, appointment, onSuccess }) => {
     endTime: appointment?.endTime || "10:00",
     notes: appointment?.notes || "",
   });
-  const [doctors, setDoctors] = useState([]);
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
@@ -44,11 +43,9 @@ export const DoctorAppointmentForm = ({ filter, appointment, onSuccess }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [doctorsData, patientsData] = await Promise.all([
-          getAllDoctors(),
+        const [patientsData] = await Promise.all([
           getAllPatients(),
         ]);
-        setDoctors(doctorsData);
         setPatients(patientsData);
 
         if (appointment?.patientId) {
@@ -59,7 +56,7 @@ export const DoctorAppointmentForm = ({ filter, appointment, onSuccess }) => {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Failed to load patients and doctors");
+        toast.error("Failed to load patients");
       }
     };
     fetchData();

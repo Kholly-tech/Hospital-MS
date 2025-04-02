@@ -44,6 +44,10 @@ const useUser = () => {
       const res = await fetchUser();
       console.log("Res: ", res);
       dispatch(setCurrentUser(res));
+      // await setTimeout(() => {
+      //   // 
+      // },2000)
+      return res;
     } catch (error) {
     } finally {
       setLoading(false);

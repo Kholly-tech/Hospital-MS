@@ -3,7 +3,12 @@ import { Button } from '../ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
 import { Badge } from '../ui/badge';
 import { format } from 'date-fns';
-import { getAllAppointments, cancelAppointment, getDoctorAppointments, getPatientAppointments } from '../../functions/allFunctions';
+import {
+  getAllAppointments,
+  adminCancelAppointment,
+  getDoctorAppointments,
+  getPatientAppointments,
+} from "../../functions/allFunctions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { AdminAppointmentForm } from "./AdminAppointmentForm";
 import useUser from '../../services/hooks/useUser';
@@ -32,7 +37,7 @@ export const AdminAppointmentsList = () => {
 
   const handleCancel = async (appointmentId) => {
     try {
-      await cancelAppointment(appointmentId);
+      await adminCancelAppointment(appointmentId);
       setAppointments(appointments.filter((app) => app.id !== appointmentId));
     } catch (error) {
       console.error("Error cancelling appointment:", error);
@@ -47,7 +52,7 @@ export const AdminAppointmentsList = () => {
         <Dialog open={appointment.id} onOpenChange={() => setAppointment(null)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Create New Appointment</DialogTitle>
+              <DialogTitle>{`${appointment? 'Update' : 'Create New'} Appointment`}</DialogTitle>
             </DialogHeader>
             <AdminAppointmentForm
               onSuccess={() => {
@@ -57,7 +62,7 @@ export const AdminAppointmentsList = () => {
           </DialogContent>
         </Dialog>
       )}
-      <Table>
+      <Table className='mx-3'>
         <TableHeader>
           <TableRow className="font-medium text-lg">
             {<TableHead>Patient</TableHead>}

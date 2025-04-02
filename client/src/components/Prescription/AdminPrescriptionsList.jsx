@@ -85,7 +85,7 @@ export const AdminPrescriptionsList = () => {
   if (loading) return <div>Loading prescriptions...</div>;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 mx-3">
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex-1">
           <Label htmlFor="search">Search</Label>

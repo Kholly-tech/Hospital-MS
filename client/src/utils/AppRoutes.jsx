@@ -44,8 +44,12 @@ const UserRoutes = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) fetchUser();
-    else setLoading(false);
+    const loadUser = async() => {
+      if (isAuthenticated) await fetchUser();
+      else setLoading(false);
+    }
+
+    loadUser();
   }, [isAuthenticated]);
 
   if (loading) return <h1>Loading...</h1>;
@@ -71,15 +75,19 @@ const DoctorRoutes = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) fetchUser();
-    else setLoading(false);
+    const loadUser = async () => {
+      if (isAuthenticated) await fetchUser();
+      else setLoading(false);
+    };
+
+    loadUser();
   }, [isAuthenticated]);
 
   if (loading) return <h1>Loading...</h1>;
   if (!isAuthenticated) return <Login />;
   if (currentUser) {
     if (currentUser.isEmaiConfirmed) return <ConfirmEmail />;
-    if (!currentUser?.roles.includes("Doctor")) return;
+    if (!currentUser?.roles?.includes("Doctor")) return <Login />;
     return <Outlet />;
   }
   return <Login />;
@@ -100,15 +108,19 @@ const AdminRoutes = () => {
   };
 
   useEffect(() => {
-    if (isAuthenticated) fetchUser();
-    else setLoading(false);
+    const loadUser = async () => {
+      if (isAuthenticated) await fetchUser();
+      else setLoading(false);
+    };
+
+    loadUser();
   }, [isAuthenticated]);
 
   if (loading) return <h1>Loading...</h1>;
   if (!isAuthenticated) return <Login />;
   if (currentUser) {
     if (currentUser.isEmaiConfirmed) return <ConfirmEmail />;
-    if (!currentUser?.roles.includes("Admin")) return <Login />;
+    if (!currentUser?.roles?.includes("Admin")) return <Login />;
     return <Outlet />;
   }
   return <Login />;
@@ -116,18 +128,35 @@ const AdminRoutes = () => {
 
 const PublicRoutes = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const { currentUser, isAuthenticated, fetchAuthUser } = useUser();
 
+  const fetchUser = async () => {
+    try {
+      setLoading(true);
+      await fetchAuthUser();
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    if (isAuthenticated) {
-      const roles = currentUser?.roles && currentUser?.roles;
-      roles.includes("Doctor")
-        ? navigate("/doctor/dashboard")
-        : roles.includes("Patient")
-        ? navigate("/dashboard")
-        : navigate("/admin/dashboard");
+    const loadUser = async () => {
+      if (isAuthenticated) await fetchUser();
+      else setLoading(false);
+      if (currentUser?.roles) {
+        const roles = currentUser?.roles && currentUser?.roles;
+        roles.includes("Doctor")
+          ? navigate("/doctor/dashboard")
+          : roles.includes("Patient")
+          ? navigate("/dashboard")
+          : navigate("/admin/dashboard");
+      }
     };
-  }, [isAuthenticated]);
+    
+    loadUser();
+  }, [isAuthenticated, currentUser]);
 
   // if(!isAuthenticated) return <Login/>;
   return <Outlet />;

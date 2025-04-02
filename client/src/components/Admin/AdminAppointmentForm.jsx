@@ -120,20 +120,20 @@ export const AdminAppointmentForm = ({ filter, appointment, onSuccess }) => {
 
   const handlePatientSelect = (patientId) => {
     const patient = patients.find(p => p.id === patientId);
-    setSelectedPatient(patient);
+    if (patient) {setSelectedPatient(patient);
     setFormData(prev => ({
       ...prev,
       patientId: patientId
-    }));
+    }));}
   };
 
   const handleDoctorSelect = (doctorId) => {
     const doctor = doctors.find(d => d.id === doctorId);
     setSelectedDoctor(doctor);
-    setFormData(prev => ({
+    if (doctor) {setFormData(prev => ({
       ...prev,
       doctorId: doctorId
-    }));
+    }));}
   };
 
   const disabledPastDates = (date) => {

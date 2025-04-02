@@ -87,6 +87,8 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Doctor"));
     options.AddPolicy("Patient", policy => 
         policy.RequireRole("Patient"));
+    options.AddPolicy("AdminorDoctor", policy => 
+        policy.RequireRole("Admin", "Doctor"));
     
 });
 

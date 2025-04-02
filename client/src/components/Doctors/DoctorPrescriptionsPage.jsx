@@ -23,7 +23,7 @@ export const DoctorPrescriptionsPage = () => {
 
   return (
     <MainLayout>
-      <div className="space-y-4">
+      <div className="space-y-4 flex-col mx-4 lg:min-w-4xl">
         <div className="flex justify-between items-center mt-4 mx-8">
           <h2 className="text-2xl font-bold">Prescriptions Management</h2>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

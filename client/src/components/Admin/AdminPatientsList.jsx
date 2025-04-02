@@ -52,6 +52,7 @@ export const AdminPatientsList = () => {
           <AdminPatientForm patient={patient} onSuccess={handleSuccess} />
         </DialogContent>
       </Dialog>
+      
       <Table>
         <TableHeader>
           <TableRow>

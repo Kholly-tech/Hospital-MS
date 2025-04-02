@@ -44,7 +44,7 @@ export const AdminDoctorsList = () => {
 
   return (
     <div className="space-y-4">
-      <Table>
+      <Table className="mx-3">
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
@@ -62,7 +62,9 @@ export const AdminDoctorsList = () => {
               </TableCell>
               <TableCell>{doctor.email}</TableCell>
               <TableCell>
-                <Badge variant="outline" className='capitalize'>{doctor.specialization}</Badge>
+                <Badge variant="outline" className="capitalize">
+                  {doctor.specialization}
+                </Badge>
               </TableCell>
               <TableCell>{doctor.licenseNumber}</TableCell>
               <TableCell>

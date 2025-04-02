@@ -1,16 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import {
   createPrescription,
+  getAllPatients,
   updatePrescription,
 } from "../../functions/allFunctions";
+import useUser from "../../services/hooks/useUser";
+import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 export const DoctorPrescriptionForm = ({ prescription, onSuccess }) => {
+  const {currentUser} = useUser();
+  // console.log(currentUser);
   const [formData, setFormData] = useState({
-    appointmentId: prescription?.appointmentId || "",
-    doctorId: prescription?.doctorId || "",
+    doctorId: prescription?.doctorId || currentUser?.refId,
     patientId: prescription?.patientId || "",
     medication: prescription?.medication || "",
     dosage: prescription?.dosage || "",
@@ -18,33 +23,76 @@ export const DoctorPrescriptionForm = ({ prescription, onSuccess }) => {
     durationDays: prescription?.duration?.days || 30,
   });
   const [loading, setLoading] = useState(false);
+  const [patients, setPatients] = useState([]);
+  const [selectedPatient, setSelectedPatient] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [patientsData] = await Promise.all([getAllPatients()]);
+        setPatients(patientsData);
+
+        if (prescription?.patientId) {
+          const patient = patientsData.find(
+            (p) => p.id === prescription.patientId
+          );
+          setSelectedPatient(patient);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        toast.error("Failed to load patients");
+      }
+    };
+    fetchData();
+  }, [prescription?.patientId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.patientId || formData.patientId === "") {
+      toast.error("Please select a patient");
+      alert("Please select a patient");
+      return;
+    }
+
     setLoading(true);
     try {
       const data = {
         ...formData,
-        duration: { days: parseInt(formData.durationDays) },
+        duration: parseInt(formData.durationDays),
       };
+      // return console.log(data);
 
       if (prescription) {
         await updatePrescription(prescription.id, data);
+        toast.success("Prescription updated successfully");
       } else {
         await createPrescription(data);
+        toast.success("Medication prescribed successfully");
       }
       onSuccess();
     } catch (error) {
-      alert(`${error}! Please try again later.`);
+      toast.error(`Failed to save prescription! Please try again later.`);
       console.error("Error saving prescription:", error);
     } finally {
       setLoading(false);
     }
   };
 
+  const handlePatientSelect = (patientId) => {
+    const patient = patients.find((p) => p.id === patientId);
+    if (patient) {
+      setSelectedPatient(patient);
+      setFormData((prev) => ({
+        ...prev,
+        patientId: patient.id,
+      }));
+    }
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      {/* <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="appointmentId">Appointment ID</Label>
           <Input
@@ -69,19 +117,26 @@ export const DoctorPrescriptionForm = ({ prescription, onSuccess }) => {
             required
           />
         </div>
-      </div>
+      </div> */}
 
       <div className="space-y-2">
         <Label htmlFor="patientId">Patient ID</Label>
-        <Input
-          id="patientId"
-          type="number"
-          value={formData.patientId}
-          onChange={(e) =>
-            setFormData({ ...formData, patientId: e.target.value })
-          }
-          required
-        />
+        <Select value={formData.patientId} onValueChange={handlePatientSelect}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select patient">
+              {selectedPatient
+                ? `${selectedPatient.firstName} ${selectedPatient.lastName}`
+                : "Select patient"}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            {patients.map((patient) => (
+              <SelectItem key={patient.id} value={patient.id}>
+                {patient.firstName} {patient.lastName}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-2">

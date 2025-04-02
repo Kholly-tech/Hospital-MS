@@ -139,6 +139,24 @@ export const cancelAppointment = async (id) => {
     }
 };
 
+export const adminCancelAppointment = async (id) => {
+    try {
+        const res = await putDataAPI(`Appointments/admin/${id}/cancel`, {});
+        return res;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const acceptAppointment = async (id) => {
+    try {
+        const res = await putDataAPI(`Appointments/${id}/accept`, {});
+        return res;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const getDoctorAppointments = async (doctorId) => {
     try {
         const res = await getDataAPI(`Appointments/doctor/${doctorId}`);

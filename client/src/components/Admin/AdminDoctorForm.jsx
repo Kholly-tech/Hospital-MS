@@ -18,9 +18,9 @@ export const AdminDoctorForm = ({ doctor, onSuccess }) => {
     lastName: doctor?.lastName || "",
     email: doctor?.email || "",
     phoneNumber: doctor?.phoneNumber || "",
-    specialization: doctor?.specialization || "",
+    specialization: doctor?.specialization?.toLowerCase() || "",
     licenseNumber: doctor?.licenseNumber || "",
-    gender: doctor?.gender || "",
+    gender: doctor?.gender?.toLowerCase() || "",
     dateOfBirth: doctor?.dateOfBirth || "",
     password: "",
   });

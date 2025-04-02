@@ -79,10 +79,10 @@ export const data = {
       url: "#",
       icon: Pill,
       items: [
-        {
-          title: "Issue a Prescription",
-          url: "/doctor/prescriptions/add",
-        },
+        // {
+        //   title: "Issue a Prescription",
+        //   url: "/doctor/prescriptions/add",
+        // },
         {
           title: "Manage Prescriptions",
           url: "/doctor/prescriptions",

@@ -11,10 +11,9 @@ import {
 import { Badge } from "../ui/badge";
 import { format } from "date-fns";
 import {
-  getAllAppointments,
   cancelAppointment,
   getDoctorAppointments,
-  getPatientAppointments,
+  acceptAppointment,
 } from "../../functions/allFunctions";
 import {
   Dialog,
@@ -55,9 +54,26 @@ export const DoctorAppointmentsList = () => {
       await cancelAppointment(appointmentId);
       setAppointments(appointments.filter((app) => app.id !== appointmentId));
       toast.success("Appointment cancelled successfully");
+      alert("Appointment cancelled successfully!");
     } catch (error) {
       console.error("Error cancelling appointment:", error);
       toast.error("Failed to cancel appointment");
+    }
+  };
+
+  const handleAccept = async (appointmentId) => {
+    try {
+      await acceptAppointment(appointmentId);
+      setAppointments(appointments.map(app => {
+          if (app.id === appointmentId) {
+            return { ...app, status: "approved" };
+          }
+      }))
+      toast.success("Appointment approved successfully");
+      alert("Appointment approved successfully!");
+    } catch (error) {
+      console.error("Error approving appointment:", error);
+      toast.error("Failed to approve appointment");
     }
   };
 
@@ -104,48 +120,48 @@ export const DoctorAppointmentsList = () => {
           <TableBody>
             {appointments.length > 0 ? (
               appointments.map((appointment) => (
-                <TableRow key={appointment.id} className="hover:bg-muted/50">
+                <TableRow key={appointment?.id} className="hover:bg-muted/50">
                   <TableCell className="font-medium">
-                    {appointment.patient?.firstName}{" "}
-                    {appointment.patient?.lastName}
+                    {appointment?.patient?.firstName}{" "}
+                    {appointment?.patient?.lastName}
                   </TableCell>
                   <TableCell>
                     {format(
-                      new Date(appointment.appointmentDate),
+                      new Date(appointment?.appointmentDate),
                       "MMM dd, yyyy"
                     )}
                   </TableCell>
                   <TableCell>
-                    {appointment.startTime} - {appointment.endTime}
+                    {appointment?.startTime} - {appointment?.endTime}
                   </TableCell>
                   <TableCell>
                     <Badge
                       variant={
-                        appointment.status === "pending"
+                        appointment?.status === "pending"
                           ? "secondary"
-                          : appointment.status === "approved"
+                          : appointment?.status === "approved"
                           ? "default"
                           : "destructive"
                       }
                       className="capitalize"
                     >
-                      {appointment.status}
+                      {appointment?.status}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    {appointment.status === "pending" && (
+                    {appointment?.status === "pending" && (
                       <div className="flex justify-end gap-2">
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => setAppointment(appointment)}
+                          onClick={() => handleAccept(appointment?.id)}
                         >
-                          Edit
+                          Approve
                         </Button>
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() => handleCancel(appointment.id)}
+                          onClick={() => handleCancel(appointment?.id)}
                         >
                           Cancel
                         </Button>

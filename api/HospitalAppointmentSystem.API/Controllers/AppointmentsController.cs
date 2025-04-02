@@ -7,6 +7,7 @@ using HospitalAppointmentSystem.Core;
 using HospitalAppointmentSystem.Core.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -23,19 +24,23 @@ namespace HospitalAppointmentSystem.API.Controllers
         private readonly IPatientRepository _patientRepository;
         private readonly ILogger<AppointmentsController> _logger;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
         public AppointmentsController(
             IAppointmentRepository appointmentRepository,
             IDoctorRepository doctorRepository,
             IPatientRepository patientRepository,
             ILogger<AppointmentsController> logger,
-            IMapper mapper)
+            IMapper mapper,
+            UserManager<User> userManager
+            )
         {
             _appointmentRepository = appointmentRepository;
             _doctorRepository = doctorRepository;
             _patientRepository = patientRepository;
             _logger = logger;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -104,7 +109,10 @@ namespace HospitalAppointmentSystem.API.Controllers
                     return BadRequest("Invalid patient or doctor ID");
                 }
 
-                appointment.Status = NewStatus.Pending;
+                var user = await _userManager.GetUserAsync(User);
+                var roles = await _userManager.GetRolesAsync(user!);
+                if(roles.Contains("Doctor")) appointment.Status = NewStatus.Approved;
+                else appointment.Status = NewStatus.Pending;
                 appointment.CreatedAt = DateTime.UtcNow;
 
                 await _appointmentRepository.AddAsync(appointment);
@@ -131,12 +139,74 @@ namespace HospitalAppointmentSystem.API.Controllers
                     return NotFound();
                 }
 
-                if (DateTime.Now.AddHours(48) > appointment.AppointmentDate && appointment.Status != "pending")
+                if (DateTime.Now.AddHours(48) > appointment.AppointmentDate)
                 {
                     return BadRequest("Appointments can only be cancelled up to 48 hours before the scheduled time.");
                 }
 
                 appointment.Status = NewStatus.Cancelled;
+                appointment.UpdatedAt = DateTime.UtcNow;
+
+                await _appointmentRepository.UpdateAsync(appointment);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error cancelling appointment with id {id}");
+                return StatusCode(500, $"An error occurred while cancelling appointment with id {id}");
+            }
+        }
+
+        [HttpPut("admin/{id}/cancel")]
+        [Authorize("Admin")]
+        public async Task<IActionResult> AdminCancelAppointment(int id)
+        {
+            try
+            {
+                var appointment = await _appointmentRepository.GetByIdAsync(id);
+                if (appointment == null)
+                {
+                    return NotFound();
+                }
+
+                // if (DateTime.Now.AddHours(48) > appointment.AppointmentDate)
+                // {
+                //     return BadRequest("Appointments can only be cancelled up to 48 hours before the scheduled time.");
+                // }
+
+                appointment.Status = NewStatus.Cancelled;
+                appointment.UpdatedAt = DateTime.UtcNow;
+
+                await _appointmentRepository.UpdateAsync(appointment);
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error cancelling appointment with id {id}");
+                return StatusCode(500, $"An error occurred while cancelling appointment with id {id}");
+            }
+        }
+
+        [HttpPut("{id}/accept")]
+        [Authorize("AdminorDoctor")]
+        public async Task<IActionResult> AcceptAppointment(int id)
+        {
+            try
+            {
+                var appointment = await _appointmentRepository.GetByIdAsync(id);
+                if (appointment == null)
+                {
+                    return NotFound();
+                }
+
+                // if (DateTime.Now.AddHours(48) > appointment.AppointmentDate)
+                // {
+                //     return BadRequest("Appointments can only be cancelled up to 48 hours before the scheduled time.");
+                // }
+
+                appointment.Status = NewStatus.Approved;
                 appointment.UpdatedAt = DateTime.UtcNow;
 
                 await _appointmentRepository.UpdateAsync(appointment);

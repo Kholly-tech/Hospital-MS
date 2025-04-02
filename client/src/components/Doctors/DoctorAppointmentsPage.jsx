@@ -41,8 +41,8 @@ export const DoctorAppointmentsPage = () => {
 
   return (
     <MainLayout>
-      <div className="space-y-4 mt-8 max-w-full">
-        <div className="flex justify-between items-center mx-6">
+      <div className="space-y-4 mt-8 mx-4 lg:min-w-4xl">
+        <div className="flex justify-between items-center mx-6 max-w-3xl">
           <h2 className="text-2xl font-bold">Appointments</h2>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
@@ -52,7 +52,10 @@ export const DoctorAppointmentsPage = () => {
               <DialogHeader>
                 <DialogTitle>Create New Appointment</DialogTitle>
               </DialogHeader>
-              <DoctorAppointmentForm filter={filter} onSuccess={handleSuccess} />
+              <DoctorAppointmentForm
+                filter={filter}
+                onSuccess={handleSuccess}
+              />
             </DialogContent>
           </Dialog>
         </div>

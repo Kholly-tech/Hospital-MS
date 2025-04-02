@@ -24,7 +24,7 @@ export const AdminPatientForm = ({ patient, onSuccess }) => {
       ? new Date(patient.dateOfBirth)
       : new Date(),
     address: patient?.address || "",
-    insuranceProvider: patient?.insuranceProvider.toLowerCase() || "",
+    insuranceProvider: patient && patient?.insuranceProvider?.replace(" ",'').toLowerCase() || "",
     insurancePolicyNumber: patient?.insurancePolicyNumber || "",
     password: "",
   });
@@ -162,7 +162,7 @@ export const AdminPatientForm = ({ patient, onSuccess }) => {
       <div className="space-y-2">
         <Label htmlFor="insuranceProvider">Insurance Provider</Label>
         <Select
-          value={formData.insuranceProvider || patient.insuranceProvider}
+          value={formData.insuranceProvider || patient?.insuranceProvider}
           onValueChange={(value) =>
             setFormData({ ...formData, insuranceProvider: value })
           }
